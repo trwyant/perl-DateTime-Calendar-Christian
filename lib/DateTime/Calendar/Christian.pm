@@ -4,10 +4,10 @@ use strict;
 
 use vars qw($VERSION);
 
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 use DateTime 0.08;
-use DateTime::Calendar::Julian;
+use DateTime::Calendar::Julian 0.04;
 
 use Carp;
 use Params::Validate qw/ validate SCALAR OBJECT /;
@@ -23,10 +23,52 @@ my %reform_dates;
 $reform_dates{$_->[0]} = DateTime->new( year  => $_->[1],
                                         month => $_->[2],
                                         day   => $_->[3] )
-    for [ italy      => 1582, 10, 15 ],
+    for [ italy      => 1582, 10, 15 ], # including some other catholic
+                                        # countries (spain, portugal, ...)
+        [ france     => 1582, 12, 20 ],
+        [ belgium    => 1583,  1,  1 ],
+        [ holland    => 1583,  1,  1 ], # or 1583-1-12?
+        [ augsburg   => 1583,  2, 24 ],
+        [ liege      => 1583,  2, 21 ],
+        [ treves     => 1583, 10, 15 ],
+        [ bavaria    => 1583, 10, 16 ],
+        [ tyrolia    => 1583, 10, 16 ],
+        [ julich     => 1583, 11, 13 ],
+        [ cologne    => 1583, 11, 14 ], # or 1583-11-13?
+        [ wurzburg   => 1583, 11, 15 ],
+        [ mainz      => 1583, 11, 22 ],
+        [ strasbourg_diocese => 1583, 11, 27 ],
+        [ baden      => 1583, 11, 27 ],
+        [ carynthia  => 1583, 12, 25 ],
+        [ bohemia    => 1584,  1, 17 ],
+        [ lucerne    => 1584,  1, 22 ],
+        [ silesia    => 1584,  1, 23 ],
+        [ westphalia => 1584,  7, 12 ],
+        [ paderborn  => 1585,  6, 27 ],
+        [ hungary    => 1587, 11,  1 ],
+        [ transylvania=>1590, 12, 25 ],
+        [ prussia    => 1610,  9,  2 ],
+        [ hildesheim => 1631,  3, 26 ],
+        [ minden     => 1668,  2, 12 ],
+        [ strasbourg => 1682,  2, 16 ],
+        [ denmark    => 1700,  3,  1 ],
+        [ germany_protestant => 1700,  3,  1 ],
+        [ gelderland => 1700,  7, 12 ],
+        [ faeror     => 1700, 11, 28 ], # or 1700-11-27?
+        [ iceland    => 1700, 11, 28 ],
         [ utrecht    => 1700, 12, 12 ],
+        [ zurich     => 1701,  1, 12 ],
+        [ friesland  => 1701,  1, 12 ], # or 1701-01-13?
+        [ drente     => 1701,  5, 12 ], # or 1701-01-12?
         [ uk         => 1752,  9, 14 ],
+        [ bulgaria   => 1915, 11, 14 ], # or 1916-04-14?
+        [ russia     => 1918,  2, 14 ],
+        [ latvia     => 1918,  2, 15 ],
+        [ romania    => 1919,  4, 14 ], # or 1924-10-14?
         ;
+# Dates are from http://www.polysyllabic.com/GregConv.html and
+# http://privatewww.essex.ac.uk/~kent/calisto/guide/changes.htm
+# Only those dates that both sites agree on are included at the moment.
 
 {
     my $DefaultReformDate;

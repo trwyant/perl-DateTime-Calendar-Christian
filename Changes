@@ -1,4 +1,11 @@
 Revision history for Perl extension DateTime::Calendar::Christian.
 
+0.02  2003-03-27
+    - how embarrassing - there's a bug in t/08math.t ... now fixed, of
+      course
+
+    - added a number of calendar reform dates; there are now 41 of them
+      included
+
 0.01  2003-03-26
 	- original version (still buggy, probably)

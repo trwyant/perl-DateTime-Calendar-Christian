@@ -17,7 +17,7 @@ $d2 = $d->clone;
 $d2->add( hours => 3 );
 is( $d2->datetime, '1582-10-15T01:00:00', 'adding hours around calendar change' );
 $d2->subtract( hours => 3 );
-is( $d2->datetime, '1582-10-04T22:00:00', 'subtracting hours around calendar change' );
+is( $d2->datetime, '1582-10-04J22:00:00', 'subtracting hours around calendar change' );
 
 $d2 = $d->clone;
 $d2->add( days => 3 );
