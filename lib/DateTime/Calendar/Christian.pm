@@ -4,9 +4,9 @@ use strict;
 
 use vars qw($VERSION);
 
-$VERSION = '0.02';
+$VERSION = '0.03';
 
-use DateTime 0.08;
+use DateTime 0.10;
 use DateTime::Calendar::Julian 0.04;
 
 use Carp;
@@ -28,8 +28,8 @@ $reform_dates{$_->[0]} = DateTime->new( year  => $_->[1],
         [ france     => 1582, 12, 20 ],
         [ belgium    => 1583,  1,  1 ],
         [ holland    => 1583,  1,  1 ], # or 1583-1-12?
-        [ augsburg   => 1583,  2, 24 ],
         [ liege      => 1583,  2, 21 ],
+        [ augsburg   => 1583,  2, 24 ],
         [ treves     => 1583, 10, 15 ],
         [ bavaria    => 1583, 10, 16 ],
         [ tyrolia    => 1583, 10, 16 ],
@@ -116,6 +116,9 @@ sub new {
                            hour   => { type => SCALAR, default => 0 },
                            minute => { type => SCALAR, default => 0 },
                            second => { type => SCALAR, default => 0 },
+                           nanosecond => { type => SCALAR, default => 0 },
+                           fractional_second => { type => SCALAR,
+                                                  default => undef },
                            language  => { type => SCALAR | OBJECT,
                                           default => $class->DefaultLanguage },
                            time_zone => { type => SCALAR | OBJECT,
@@ -133,6 +136,9 @@ sub new {
     bless $self, $class;
 
     if (defined $args{year}) {
+        # Workaround: DateTime does not accept undef'd fractional_second
+        delete $args{fractional_second}
+            unless defined $args{fractional_second};
         $self->{date} = DateTime->new(%args);
         if ($self->{date} < $self->{reform_date}) {
             $self->{date} = DateTime::Calendar::Julian->new(%args);
@@ -410,7 +416,8 @@ sub set {
     my %old_p = 
         ( reform_date => $self->{reform_date},
           map { $_ => $self->$_() }
-            qw( year month day hour minute second language time_zone )
+            qw( year month day hour minute second nanosecond
+                language time_zone )
         );
 
     my $new_dt = (ref $self)->new( %old_p, %p );
@@ -451,6 +458,7 @@ sub day_of_year_0 {
 for my $sub (qw/year ce_year month month_0 month_name month_abbr
                 day_of_month day_of_month_0 day_of_week day_of_week_0
                 day_name day_abbr ymd mdy dmy hour minute second hms
+                nanosecond millisecond microsecond
                 iso8601 datetime week_year week_number
                 time_zone offset is_dst time_zone_short_name language
                 utc_rd_values utc_rd_as_seconds local_rd_as_seconds jd
@@ -460,7 +468,8 @@ for my $sub (qw/year ce_year month month_0 month_name month_abbr
     no strict 'refs';
     *$sub = sub {
                 my $self = shift;
-                croak "Empty date object in call to $sub" unless exists $self->{date};
+                croak "Empty date object in call to $sub"
+                    unless exists $self->{date};
                 $self->{date}->$sub(@_)
             };
 }
@@ -513,7 +522,7 @@ See L<DateTime> for information about most of the methods.
 =head1 BACKGROUND
 
 The Julian calendar, introduced in Roman times, had an average year
-length of 365.25 days, about 0.03 more than the correct number. When
+length of 365.25 days, about 0.03 days more than the correct number. When
 this difference had cummulated to about ten days, the calendar was
 reformed by pope Gregory XIII, who introduced a new leap year rule. To
 correct for the error that had built up over the centuries, ten days
@@ -531,7 +540,8 @@ DateTime. See L<DateTime> for all other methods.
 =item * new( ... )
 
 Besides the usual parameters ("year", "month", "day", "hour", "minute",
-"second", "language" and "time_zone"), this class method takes the
+"second", "nanosecond", "fractional_seconds", "language" and "time_zone"),
+this class method takes the
 additional "reform_date" parameter. This parameter can be a DateTime
 object (or an object that can be converted into a DateTime). This
 denotes the first date of the Gregorian calendar. It can also be a

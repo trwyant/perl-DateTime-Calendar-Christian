@@ -2,7 +2,7 @@ use strict;
 BEGIN { $^W = 1 }
 
 
-use Test::More tests => 4;
+use Test::More tests => 7;
 use DateTime::Calendar::Christian;
 
 #########################
@@ -15,8 +15,15 @@ SKIP: {
     is( $d->epoch, 0, 'epoch 0' );
     is( $d->ymd, '1970-01-01', 'epoch is correct' );
 
+    $d = DateTime::Calendar::Christian->from_epoch( epoch => 1e9 );
+    is( $d->epoch, 1e9, 'epoch 1e9' );
+    is( $d->ymd, '2001-09-09', 'epoch is correct' );
+
     $d = DateTime::Calendar::Christian->from_epoch( epoch => 0,
                                                     reform_date => $r );
     is( $d->epoch, 0, 'epoch 0 (Julian)' );
     is( $d->ymd, '1969-12-19', 'epoch is correct (Julian)' );
 }
+
+my $d = DateTime::Calendar::Christian->now( reform_date => $r );
+isa_ok( $d, 'DateTime::Calendar::Christian' );

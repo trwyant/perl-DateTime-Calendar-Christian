@@ -1,7 +1,7 @@
 use strict;
 BEGIN { $^W = 1 }
 
-use Test::More tests => 13;
+use Test::More tests => 20;
 use DateTime::Calendar::Christian;
 
 #########################
@@ -52,17 +52,61 @@ is( $d->ymd, '1585-01-11', 'adding centuries around calendar change' );
 $d->subtract( years => 300 );
 is( $d->ymd, '1285-01-01', 'subtracting centuries around calendar change' );
 
-my $r = DateTime->new( year  => 1752,
-                       month => 9,
-                       day   => 14 );
+$d = DateTime::Calendar::Christian->new(
+        year => 1582, month => 10, day => 30 );
+$d2 = DateTime::Calendar::Christian->new(
+        year => 1582, month => 10, day => 1 );
+
+my $dur = $d - $d2;
+isa_ok( $dur, 'DateTime::Duration' );
+is( $dur->delta_days, 19, 'datetime - datetime' );
+
+TODO: {
+    todo_skip 'mixed math (with DateTime objects) not implemented', 2;
+    $d = DateTime->new( year => 1582, month => 10, day => 30 );
+    $dur = $d2->subtract_datetime($d);
+    isa_ok( $dur, 'DateTime::Duration' );
+    is( $dur->delta_days, 19, 'subtracting DateTime object' );
+}
+
+##############################################
+# Some historical examples
 
 # George Washington's birthday
+
 $d = DateTime::Calendar::Christian->new(
                        year  => 1732,
                        month => 2,
                        day   => 11,
-                       reform_date => $r );
+                       reform_date => 'uk' );
 
-# George Washington's 60th birthday
-$d->add( years => 60 );
-is( $d->ymd, '1792-02-22', "Washington's birthday" );
+$d2 = $d->clone;
+$d2->add( years => 60 );
+is( $d2->ymd, '1792-02-22', "Washington's 60th birthday" );
+$d2 = $d->clone;
+$d2->add( years => 100 );
+is( $d2->ymd, '1832-02-22', "Washington's 100th birthday" );
+# (This is actually 1832-02-10 Julian!)
+
+# George II's birthday (see Ben Franklin's Poor Richard's Almanac for
+# November 1753, http://www.gettysburg.edu/~tshannon/his341/pra53nov.htm)
+
+$d = DateTime::Calendar::Christian->new(
+                       year  => 1683,
+                       month => 10,
+                       day   => 30,
+                       reform_date => 'uk' );
+
+$d2 = $d->add( years => 70 );
+is( $d->ymd, '1753-11-10', "George II's 70th birthday" );
+
+# Russian revolution (october revolution)
+
+$d = DateTime::Calendar::Christian->new(
+                       year  => 1917,
+                       month => 10,
+                       day   => 25,
+                       reform_date => 'russia' );
+
+$d2 = $d->add( years => 86 );
+is( $d->ymd, '2003-11-07', 'Russian revolution' );
