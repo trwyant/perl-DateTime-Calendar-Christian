@@ -27,5 +27,5 @@ $d = DateTime::Calendar::Christian->new( year  => 1582,
                                          time_zone => 'floating' );
 
 $d->set( day => 10 );
-is($d->ymd, '1582-10-20', 'correct date (missing day)');
-ok($d->is_gregorian, 'is_gregorian (missing day)');
+is($d->ymd, '1582-09-30', 'correct date (missing day)');
+ok($d->is_julian, 'is_julian (missing day)');

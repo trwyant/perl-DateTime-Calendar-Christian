@@ -1,7 +1,7 @@
 use strict;
 BEGIN { $^W = 1 }
 
-use Test::More tests => 16;
+use Test::More tests => 15;
 use DateTime::Calendar::Christian;
 
 #########################
@@ -32,8 +32,8 @@ $d = DateTime::Calendar::Christian->new( year  => 1582,
                                          month => 10,
                                          day   => 5,
                                          time_zone => 'floating' );
-ok( $d->is_gregorian, '1582-10-05 is_gregorian' );
-is( $d->ymd, '1582-10-15', '... and correct date' );
+ok( $d->is_julian, '1582-10-05 is_julian' );
+is( $d->ymd, '1582-09-25', '... and correct date' );
 
 $d = DateTime::Calendar::Christian->new( year  => 1582,
                                          month => 10,
@@ -49,12 +49,12 @@ $d = DateTime::Calendar::Christian->new( year  => 1300,
 ok( $d->is_julian, '1300 is_julian' );
 is( $d->ymd, '1300-02-29', '... and leap year' );
 
-$d = DateTime::Calendar::Christian->new( year  => 1700,
-                                         month => 2,
-                                         day   => 29,
-                                         time_zone => 'floating' );
-ok( $d->is_gregorian, '1700 is_gregorian' );
-is( $d->ymd, '1700-03-01', '... and non-leap year' );
+eval { $d = DateTime::Calendar::Christian->new( year  => 1700,
+                                                month => 2,
+                                                day   => 29,
+                                                time_zone => 'floating' );
+     };
+ok( $@, '1700-02-29 is invalid' );
 
 $d = DateTime::Calendar::Christian->new( year  => 1582,
                                          month => 10,

@@ -2,7 +2,7 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME		    => 'DateTime::Calendar::Christian',
     VERSION_FROM	=> 'lib/DateTime/Calendar/Christian.pm',
-    PREREQ_PM		=> { DateTime => 0.09,
+    PREREQ_PM		=> { DateTime => 0.1402,
                          DateTime::Calendar::Julian => 0.04,
                          Params::Validate => 0.52,
                        },

@@ -4,9 +4,9 @@ use strict;
 
 use vars qw($VERSION);
 
-$VERSION = '0.03';
+$VERSION = '0.04';
 
-use DateTime 0.10;
+use DateTime 0.1402;
 use DateTime::Calendar::Julian 0.04;
 
 use Carp;
@@ -117,8 +117,6 @@ sub new {
                            minute => { type => SCALAR, default => 0 },
                            second => { type => SCALAR, default => 0 },
                            nanosecond => { type => SCALAR, default => 0 },
-                           fractional_second => { type => SCALAR,
-                                                  default => undef },
                            language  => { type => SCALAR | OBJECT,
                                           default => $class->DefaultLanguage },
                            time_zone => { type => SCALAR | OBJECT,
@@ -136,12 +134,9 @@ sub new {
     bless $self, $class;
 
     if (defined $args{year}) {
-        # Workaround: DateTime does not accept undef'd fractional_second
-        delete $args{fractional_second}
-            unless defined $args{fractional_second};
-        $self->{date} = DateTime->new(%args);
-        if ($self->{date} < $self->{reform_date}) {
-            $self->{date} = DateTime::Calendar::Julian->new(%args);
+        $self->{date} = DateTime::Calendar::Julian->new(%args);
+        if ($self->{date} >= $self->{reform_date}) {
+            $self->{date} = DateTime->new(%args);
             $self->_adjust_calendar;
         }
     }
@@ -211,7 +206,7 @@ sub from_object {
 sub last_day_of_month {
     my ($class, %p) = @_;
     my $month = $p{month};
-    # First, determine the first day of the next month...
+    # First, determine the first day of the next month.
     $p{day} = 1;
     $p{month}++;
     if ($p{month} > 12) {
@@ -220,22 +215,17 @@ sub last_day_of_month {
     }
     my $self = $class->new( %p );
 
-    # ... and subtract one. That should be the last day of the month...
+    if ($self->month != $p{month}) {
+        # Apparently, month N+1 does not have a day 1.
+        # This means that this date is removed in the calendar reform,
+        # and the last day of month N is the last day before the reform.
+
+        $self = $self->from_object( object => $self->{reform_date} );
+    }
+
+    # Subtract one. That should be the last day of the month.
     $self->subtract( days => 1 );
 
-    # ...unless that date falls in the missing days of the calendar
-    # reform. In that case, the last of the month is the day before the
-    # calendar reform.
-    if ($self->month != $month) {
-        $self->{date} = DateTime::Calendar::Julian->from_object(
-                            object => $self->reform_date );
-        $self->subtract( days => 1 );
-        delete $p{$_} for qw/year month day reform_date/;
-        my $tz = delete $p{time_zone};
-        $self->set( %p );
-        $self->set_time_zone( 'floating' );
-        $self->set_time_zone( $tz ) if defined $tz;
-    }
     return $self;
 }
 
@@ -260,11 +250,11 @@ sub is_leap_year {
 
     # Difficult case: $year is in the year of the calendar reform
     # Test if Feb 29 exists
-    my $d = $self->new( year  => $year,
-                        month => 2,
-                        day   => 29,
-                        time_zone => 'floating' );
-    return $d->month == 2 and $d->day == 29;
+    my $d = eval { $self->new( year  => $year,
+                               month => 2,
+                               day   => 29,
+                             ) };
+    return defined($d) && $d->month == 2 && $d->day == 29;
 }
 
 sub _add_overload {
@@ -569,10 +559,10 @@ You can use this generator to create dates with the given reform_date:
   $died = $english_calendar->new( year => 1799, month => 12, day => 14 );
 
 When a date is given that was skipped during a calendar reform, it is
-assumed that it is a Julian date, which is then converted to the
-corresponding Gregorian date. This behaviour may change in future
+assumed that it is a Gregorian date, which is then converted to the
+corresponding Julian date. This behaviour may change in future
 versions. If a date is given that can be both Julian and Gregorian, it
-will be considered Gregorian. This is a bug.
+will be considered Julian. This is a bug.
 
 =item * from_epoch
 

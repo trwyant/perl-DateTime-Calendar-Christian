@@ -37,7 +37,7 @@ $r = DateTime::Calendar::Christian->new(
 $d = DateTime::Calendar::Christian->last_day_of_month(
         year  => 1650, month => 2, reform_date => $r );
 
-is( $d->ymd, '1650-02-22', 'less incomplete month');
+is( $d->datetime, '1650-02-22J00:00:00', 'less incomplete month');
 
 $r = DateTime::Calendar::Christian->new(
         year  => 1600, month => 3, day => 1 );

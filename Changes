@@ -1,5 +1,14 @@
 Revision history for Perl extension DateTime::Calendar::Christian.
 
+0.04  2003-07-28
+    - DateTime 0.14 introduced some incompatible changes.
+      Updated DT::C::Christian to this new DateTime version.
+
+    - If new() is passed a date which is one of the missing days (during
+      a calendar transform), this is now interpreted as a proleptic
+      Gregorian date; this means that the returned date is now *before*
+      the calendar change, instead of *after* the change.
+
 0.03  2003-04-24
     - added nanosecond support, by requiring DateTime 0.10
 
