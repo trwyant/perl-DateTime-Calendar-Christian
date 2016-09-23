@@ -1,0 +1,6 @@
+blib/
+DateTime-Calendar-Christian-*
+Makefile
+META.*
+MYMETA.*
+pm_to_blib
