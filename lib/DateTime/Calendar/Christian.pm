@@ -117,8 +117,8 @@ sub new {
                            minute => { type => SCALAR, default => 0 },
                            second => { type => SCALAR, default => 0 },
                            nanosecond => { type => SCALAR, default => 0 },
-                           language  => { type => SCALAR | OBJECT,
-                                          default => $class->DefaultLanguage },
+                           locale  => { type => SCALAR | OBJECT,
+                                          default => $class->DefaultLocale },
                            time_zone => { type => SCALAR | OBJECT,
                                           default => 'floating' },
                            reform_date => { type => SCALAR | OBJECT,
@@ -181,6 +181,8 @@ sub from_epoch {
 }
 
 sub now { shift->from_epoch( epoch => (scalar time), @_ ) }
+ 
+sub today { shift->now(@_)->truncate( to => 'day' ) }
 
 sub from_object {
     my $class = shift;
@@ -407,7 +409,7 @@ sub set {
         ( reform_date => $self->{reform_date},
           map { $_ => $self->$_() }
             qw( year month day hour minute second nanosecond
-                language time_zone )
+                locale time_zone )
         );
 
     my $new_dt = (ref $self)->new( %old_p, %p );
@@ -450,7 +452,7 @@ for my $sub (qw/year ce_year month month_0 month_name month_abbr
                 day_name day_abbr ymd mdy dmy hour minute second hms
                 nanosecond millisecond microsecond
                 iso8601 datetime week_year week_number
-                time_zone offset is_dst time_zone_short_name language
+                time_zone offset is_dst time_zone_short_name locale
                 utc_rd_values utc_rd_as_seconds local_rd_as_seconds jd
                 mjd strftime epoch utc_year compare _compare_overload/,
              # these should be replaced with a corrected version
@@ -481,9 +483,9 @@ for my $sub (qw/year ce_year month month_0 month_name month_abbr
 *sec = \&second;
 *DateTime::Calendar::Christian::time = \&hms;
 
-sub DefaultLanguage {
+sub DefaultLocale {
     shift;
-    DateTime->DefaultLanguage(@_);
+    DateTime->DefaultLocale(@_);
 }
 
 1;
@@ -530,7 +532,7 @@ DateTime. See L<DateTime> for all other methods.
 =item * new( ... )
 
 Besides the usual parameters ("year", "month", "day", "hour", "minute",
-"second", "nanosecond", "fractional_seconds", "language" and "time_zone"),
+"second", "nanosecond", "fractional_seconds", "locale" and "time_zone"),
 this class method takes the
 additional "reform_date" parameter. This parameter can be a DateTime
 object (or an object that can be converted into a DateTime). This
@@ -613,8 +615,9 @@ fine; it's just the calendar reform dates that should be inside these
 limits.)
 
 =item * There may be functions that give the wrong results for the year
-of the calendar reform. The function L<truncate> is a known problem. If
-you find any more problems, please let me know.
+of the calendar reform. The function L<truncate> is a known problem, and
+L<today> may be a problem. If you find any more problems, please let me
+know.
 
 =back
 
