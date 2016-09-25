@@ -1,6 +1,8 @@
 blib/
 DateTime-Calendar-Christian-*
 Makefile
+meta/
 META.*
 MYMETA.*
 pm_to_blib
+ref/
