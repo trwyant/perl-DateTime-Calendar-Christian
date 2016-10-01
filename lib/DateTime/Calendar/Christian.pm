@@ -537,7 +537,8 @@ this class method takes the
 additional "reform_date" parameter. This parameter can be a DateTime
 object (or an object that can be converted into a DateTime). This
 denotes the first date of the Gregorian calendar. It can also be a
-string, containing the name of a location, e.g. 'Italy'.
+string, containing the name of a location, e.g. 'Italy'. Location names
+are not case-sensitive.
 
 If this method is used as an instance method and no "reform_date" is
 given, the "reform_date" of the returned object is the same as the one
@@ -565,6 +566,50 @@ assumed that it is a Gregorian date, which is then converted to the
 corresponding Julian date. This behaviour may change in future
 versions. If a date is given that can be both Julian and Gregorian, it
 will be considered Julian. This is a bug.
+
+The supported reform date location names are:
+
+ Italy -------------- 1582-10-15 # and some other Catholic countries
+ France ------------- 1582-12-20
+ Belgium ------------ 1583-1-1
+ Holland ------------ 1583-1-1   # or 1583-1-12?
+ Liege -------------- 1583-2-21
+ Augsburg ----------- 1583-2-24
+ Treves ------------- 1583-10-15
+ Bavaria ------------ 1583-10-16
+ Tyrolia ------------ 1583-10-16
+ Julich ------------- 1583-11-13
+ Cologne ------------ 1583-11-14 # or 1583-11-13?
+ Wurzburg ----------- 1583-11-15
+ Mainz -------------- 1583-11-22
+ Strasbourg_Diocese - 1583-11-27
+ Baden -------------- 1583-11-27
+ Carynthia ---------- 1583-12-25
+ Bohemia ------------ 1584-1-17
+ Lucerne ------------ 1584-1-22
+ Silesia ------------ 1584-1-23
+ Westphalia --------- 1584-7-12
+ Paderborn ---------- 1585-6-27
+ Hungary ------------ 1587-11-1
+ Transylvania ------- 1590-12-25
+ Prussia ------------ 1610-9-2
+ Hildesheim --------- 1631-3-26
+ Minden ------------- 1668-2-12
+ Strasbourg --------- 1682-2-16
+ Denmark ------------ 1700-3-1
+ Germany_Protestant - 1700-3-1
+ Gelderland --------- 1700-7-12
+ Faeror ------------- 1700-11-28 # or 1700-11-27?
+ Iceland ------------ 1700-11-28
+ Utrecht ------------ 1700-12-12
+ Zurich ------------- 1701-1-12
+ Friesland ---------- 1701-1-12  # or 1701-01-13?
+ Drente ------------- 1701-5-12  # or 1701-01-12?
+ UK ----------------- 1752-9-14
+ Bulgaria ----------- 1915-11-14 # or 1916-04-14?
+ Russia ------------- 1918-2-14
+ Latvia ------------- 1918-2-15
+ Romania ------------ 1919-4-14  # or 1924-10-14?
 
 =item * from_epoch
 
