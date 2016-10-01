@@ -1,6 +1,7 @@
 package DateTime::Calendar::Christian;
 
 use strict;
+use warnings;
 
 use vars qw($VERSION);
 
