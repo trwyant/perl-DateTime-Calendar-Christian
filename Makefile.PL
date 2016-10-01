@@ -1,3 +1,6 @@
+
+use 5.008004;
+
 use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME		    => 'DateTime::Calendar::Christian',
