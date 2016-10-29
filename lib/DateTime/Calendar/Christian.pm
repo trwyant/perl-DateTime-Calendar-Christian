@@ -678,11 +678,15 @@ list. See http://lists.perl.org/ for more details.
 
 Eugene van der Pijll <pijll@gmx.net>
 
+Thomas R. Wyant, III F<wyant at cpan dot org>
+
 =head1 COPYRIGHT
 
 Copyright (c) 2003 Eugene van der Pijll.  All rights reserved.  This
 program is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.
+
+Copyright (C) 2016 Thomas R. Wyamt, III
 
 =head1 SEE ALSO
 

@@ -10,5 +10,8 @@ WriteMakefile(
                          Params::Validate => 0.52,
                        },
     ABSTRACT        => 'Dates in the Christian (combined Julian/Gregorian) calendar',
-    AUTHOR          => 'Eugene van der Pijll <pijll@gmx.net>',
+    AUTHOR          => [
+	'Eugene van der Pijll <pijll@gmx.net>',
+	'Thomas R. Wyant, III <wyant at cpan dot org>',
+    ],
 );
