@@ -7,7 +7,7 @@ use warnings;
 
 use vars qw($VERSION);
 
-$VERSION = '0.04';
+$VERSION = '0.04_01';
 
 use DateTime 0.1402;
 use DateTime::Calendar::Julian 0.04;
