@@ -158,6 +158,11 @@ sub is_gregorian {
     return ! $_[0]->is_julian;
 }
 
+sub calendar_name {
+    my ( $self ) = @_;
+    return $self->is_julian() ? 'Julian' : 'Gregorian';
+}
+
 sub from_epoch {
     my ( $class, %args ) = @_;
 
@@ -440,6 +445,21 @@ sub day_of_year_0 {
     return shift->day_of_year - 1;
 }
 
+sub strftime {
+    my ( $self, @fmts ) = @_;
+    foreach ( @fmts ) {
+	s/ %\{ ( calendar_name ) \} / $self->_strftime_helper( "$1" ) /smxge;
+    }
+    return $self->{date}->strftime( @fmts );
+}
+
+sub _strftime_helper {
+    my ( $self, $method ) = @_;
+    my $rslt = $self->$method();
+    $rslt =~ s/ % /%%/smxg;
+    return $rslt;
+}
+
 # Delegate to $self->{date}
 
 for my $sub (qw/year ce_year month month_0 month_name month_abbr
@@ -449,7 +469,7 @@ for my $sub (qw/year ce_year month month_0 month_name month_abbr
                 iso8601 datetime week_year week_number
                 time_zone offset is_dst time_zone_short_name locale
                 utc_rd_values utc_rd_as_seconds local_rd_as_seconds jd
-                mjd strftime epoch utc_year compare _compare_overload/,
+                mjd epoch utc_year compare _compare_overload/,
              # these should be replaced with a corrected version
              qw/truncate/) {
     no strict 'refs';
@@ -621,6 +641,11 @@ Returns the date of the calendar reform, as a DateTime object.
 Return true or false indicating whether the datetime object is in a
 specific calendar.
 
+=item * calendar_name
+
+Return C<'Julian'> or C<'Gregorian'>, depending on the value returned by
+C<is_julian()>.
+
 =item * is_leap_year
 
 This method returns a true or false indicating whether or not the
@@ -633,6 +658,12 @@ calendar as the possible leap day.
 
 Returns the number of days in the year. Is equal to 365 or 366, except
 for the year(s) of the calendar reform.
+
+=item * strftime
+
+This override allows selected methods of this class (i.e. not inherited
+from DateTime) to be used in the C<'%{method_name}'> construction in
+templates. The only method allowed at the moment is C<calendar_name>.
 
 =item * gregorian_deviation( [$datetime] )
 
