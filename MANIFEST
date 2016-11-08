@@ -1,9 +1,9 @@
 Changes
+lib/DateTime/Calendar/Christian.pm
 LICENSE
 Makefile.PL
 MANIFEST
 README
-lib/DateTime/Calendar/Christian.pm
 t/01load.t
 t/02creation.t
 t/03jul_greg.t
@@ -17,3 +17,14 @@ t/10set.t
 t/11month.t
 t/11week.t
 t/12doy.t
+xt/author/basic.t
+xt/author/changes.t
+xt/author/critic.t
+xt/author/executable.t
+xt/author/kwalitee.t
+xt/author/manifest.t
+xt/author/minimum_perl.t
+xt/author/perlcriticrc
+xt/author/pod.t
+xt/author/pod_coverage.t
+xt/author/pod_spelling.t

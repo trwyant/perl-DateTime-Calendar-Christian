@@ -75,7 +75,8 @@ $reform_dates{$_->[0]} = DateTime->new( year  => $_->[1],
     my $DefaultReformDate;
     sub DefaultReformDate
     {
-        my $class = shift;
+#        my $class = shift;
+	shift;
 
         if (@_)
         {
@@ -105,10 +106,12 @@ sub _init_reform_date {
     } else {
         $self->{reform_date} = $base->DefaultReformDate;
     }
+
+    return;
 }
 
 
-sub new {
+sub new {	## no critic (RequireArgUnpack)
     my $class = shift;
     my %args = validate( @_,
                          { year   => { type => SCALAR, default => undef },
@@ -154,6 +157,8 @@ sub _adjust_calendar {
     } elsif ($self->is_julian and $self->{date} >= $self->{reform_date}) {
         $self->{date} = DateTime->from_object( object => $self->{date} );
     }
+
+    return;
 }
 
 sub is_julian {
@@ -165,8 +170,7 @@ sub is_gregorian {
 }
 
 sub from_epoch {
-    my $class = shift;
-    my %args = @_;
+    my ( $class, %args ) = @_;
 
     my $self = {};
 
@@ -181,13 +185,12 @@ sub from_epoch {
     return $self;
 }
 
-sub now { shift->from_epoch( epoch => (scalar time), @_ ) }
+sub now { return shift->from_epoch( epoch => (scalar time), @_ ) }
  
-sub today { shift->now(@_)->truncate( to => 'day' ) }
+sub today { return shift->now(@_)->truncate( to => 'day' ) }
 
 sub from_object {
-    my $class = shift;
-    my %args = @_;
+    my ( $class, %args ) = @_;
 
     my $self = {};
 
@@ -208,7 +211,6 @@ sub from_object {
 # 27.
 sub last_day_of_month {
     my ($class, %p) = @_;
-    my $month = $p{month};
     # First, determine the first day of the next month.
     $p{day} = 1;
     $p{month}++;
@@ -238,7 +240,7 @@ sub clone {
     my $new = {};
     $new->{reform_date} = $self->{reform_date}->clone;
     $new->{date} = $self->{date}->clone if exists $self->{date};
-    bless $new, ref $self;
+    return bless $new, ref $self;
 }
 
 sub is_leap_year {
@@ -289,7 +291,7 @@ sub _subtract_overload {
     }
 }
 
-sub add { shift->add_duration( DateTime::Duration->new(@_) ) }
+sub add { return shift->add_duration( DateTime::Duration->new(@_) ) }
 
 sub subtract { return shift->subtract_duration( DateTime::Duration->new(@_) ) }
 
@@ -332,6 +334,8 @@ sub add_duration {
     }
 
     $self->{date}->subtract( days => $dd ) if $dd;
+
+    return $self;
 }
 
 sub gregorian_deviation {
@@ -343,7 +347,7 @@ sub gregorian_deviation {
     return $date->gregorian_deviation;
 }
 
-sub reform_date { $_[0]->{reform_date} }
+sub reform_date { return $_[0]->{reform_date} }
 
 # Almost the same as DateTime::week
 sub week
@@ -400,10 +404,9 @@ sub _weeks_in_year
 }
 
 sub set {
-    my $self = shift;
+    my ( $self, %p ) = @_;
 
-    my %p = @_;
-    croak "Cannot change reform_date with set()"
+    croak 'Cannot change reform_date with set()'
         if exists $p{reform_date};
 
     my %old_p = 
@@ -421,10 +424,10 @@ sub set {
 }
 
 sub set_time_zone {
-    my $self = shift;
-
-    $self->{date}->set_time_zone(@_);
+    my ( $self, @arg ) = @_;
+    $self->{date}->set_time_zone( @arg );
     $self->_adjust_calendar;
+    return $self;
 }
 
 # This code assumes there is a month of December of the previous year.
@@ -486,7 +489,7 @@ for my $sub (qw/year ce_year month month_0 month_name month_abbr
 
 sub DefaultLocale {
     shift;
-    DateTime->DefaultLocale(@_);
+    return DateTime->DefaultLocale( @_ );
 }
 
 1;
@@ -516,7 +519,7 @@ See L<DateTime> for information about most of the methods.
 
 The Julian calendar, introduced in Roman times, had an average year
 length of 365.25 days, about 0.03 days more than the correct number. When
-this difference had cummulated to about ten days, the calendar was
+this difference had accumulated to about ten days, the calendar was
 reformed by pope Gregory XIII, who introduced a new leap year rule. To
 correct for the error that had built up over the centuries, ten days
 were skipped in October 1582. In most countries, the change date was
@@ -647,6 +650,14 @@ Julian calendar. If the parameter $datetime is given, it will be used to
 calculate the result; in this case this method can be used as a class
 method.
 
+=item * DefaultReformDate
+
+This static method returns a L<DateTime|DateTime> object representing
+the default reform date. If called with an argument, the argument
+becomes the new reform date, which is returned. The argument is either a
+L<DateTime|DateTime> object (or something that can be converted into
+one) or a reform date location name.
+
 =back
 
 =head1 BUGS
@@ -684,7 +695,7 @@ Copyright (c) 2003 Eugene van der Pijll.  All rights reserved.  This
 program is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.
 
-Copyright (C) 2016 Thomas R. Wyamt, III
+Copyright (C) 2016 Thomas R. Wyant, III
 
 =head1 SEE ALSO
 
