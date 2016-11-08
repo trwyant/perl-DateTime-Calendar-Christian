@@ -1,7 +1,9 @@
-use strict;
-BEGIN { $^W = 1 }
+use 5.008004;
 
-use Test::More tests => 10;
+use strict;
+use warnings;
+
+use Test::More 0.88;	# Because of done_testing();
 use DateTime::Calendar::Christian;
 
 #########################
@@ -62,3 +64,7 @@ $d = DateTime::Calendar::Christian->new( year  => 2003,
                                          time_zone => 'floating',
                                          reform_date => 'Utrecht' );
 is($d->reform_date->ymd, '1700-12-12', "reform date 'Utrecht'");
+
+done_testing;
+
+# ex: set textwidth=72 :

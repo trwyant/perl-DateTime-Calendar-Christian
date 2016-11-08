@@ -5,9 +5,7 @@ use 5.008004;
 use strict;
 use warnings;
 
-# use Test::More 0.88;	# Because of done_testing();
-
-use Test::More 0.40;
+use Test::More 0.88;	# Because of done_testing();
 
 eval {
     require ExtUtils::Manifest;
@@ -32,8 +30,6 @@ foreach my $fn ( sort keys %{ $manifest } ) {
 	or next;
     push @to_check, $fn;
 }
-
-plan tests => scalar @to_check;
 
 foreach my $fn ( @to_check ) {
     my $doc = Perl::MinimumVersion->new( $fn );

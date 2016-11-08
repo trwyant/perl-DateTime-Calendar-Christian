@@ -1,7 +1,9 @@
-use strict;
-BEGIN { $^W = 1 }
+use 5.008004;
 
-use Test::More tests => 15;
+use strict;
+use warnings;
+
+use Test::More 0.88;	# Because of done_testing();
 use DateTime::Calendar::Christian;
 
 #########################
@@ -62,3 +64,7 @@ $d = DateTime::Calendar::Christian->new( year  => 1582,
                                          time_zone => 'floating' );
 ok( $d->is_gregorian, '1582-10-15 is_gregorian' );
 is( $d->ymd, '1582-10-15', '... and correct date' );
+
+done_testing;
+
+# ex: set textwidth=72 :

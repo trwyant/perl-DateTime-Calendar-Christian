@@ -1,7 +1,9 @@
-use strict;
-BEGIN { $^W = 1 }
+use 5.008004;
 
-use Test::More tests => 6;
+use strict;
+use warnings;
+
+use Test::More 0.88;	# Because of done_testing();
 use DateTime::Calendar::Christian;
 
 #########################
@@ -46,3 +48,7 @@ $d = DateTime::Calendar::Christian->last_day_of_month(
         year  => 1600, month => 2, reform_date => $r );
 
 is( $d->ymd, '1600-02-19', 'incomplete month 1600-02');
+
+done_testing;
+
+# ex: set textwidth=72 :

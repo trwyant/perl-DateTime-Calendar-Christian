@@ -1,7 +1,9 @@
-use strict;
-BEGIN { $^W = 1 }
+use 5.008004;
 
-use Test::More tests => 42;
+use strict;
+use warnings;
+
+use Test::More 0.88;	# Because of done_testing();
 use DateTime::Calendar::Christian;
 
 #########################
@@ -79,3 +81,7 @@ test_dates( @tests );
         );
 
 test_dates( @tests );
+
+done_testing;
+
+# ex: set textwidth=72 :

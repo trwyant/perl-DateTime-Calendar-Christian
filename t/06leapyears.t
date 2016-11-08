@@ -1,5 +1,7 @@
+use 5.008004;
+
 use strict;
-BEGIN { $^W = 1 }
+use warnings;
 
 use Test::More tests => 8;
 use DateTime::Calendar::Christian;
@@ -61,3 +63,7 @@ $d = DateTime::Calendar::Christian->new( year  => 1700,
                                          day   => 1,
                                          reform_date => $rd );
 ok( ! $d->is_leap_year, 'no leap day during calendar reform' );
+
+done_testing;
+
+# ex: set textwidth=72 :

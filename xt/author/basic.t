@@ -5,11 +5,7 @@ use 5.008004;
 use strict;
 use warnings;
 
-# use Test::More 0.88;	# Because of done_testing();
-
-use Test::More 0.40;
-
-plan tests => 6;
+use Test::More 0.88;	# Because of done_testing();
 
 note 'Modules required for development';
 
@@ -24,6 +20,8 @@ require_ok 'Test::Kwalitee';
 require_ok 'Test::Pod';
 
 require_ok 'Test::Spelling';
+
+done_testing;
 
 1;
 

@@ -1,8 +1,9 @@
+use 5.008004;
+
 use strict;
-BEGIN { $^W = 1 }
+use warnings;
 
-
-use Test::More tests => 7;
+use Test::More 0.88;	# Because of done_testing();
 use DateTime::Calendar::Christian;
 
 #########################
@@ -27,3 +28,7 @@ SKIP: {
 
 my $d = DateTime::Calendar::Christian->now( reform_date => $r );
 isa_ok( $d, 'DateTime::Calendar::Christian' );
+
+done_testing;
+
+# ex: set textwidth=72 :

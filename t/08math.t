@@ -1,7 +1,9 @@
-use strict;
-BEGIN { $^W = 1 }
+use 5.008004;
 
-use Test::More tests => 20;
+use strict;
+use warnings;
+
+use Test::More 0.88;	# Because of done_testing();
 use DateTime::Calendar::Christian;
 
 #########################
@@ -110,3 +112,7 @@ $d = DateTime::Calendar::Christian->new(
 
 $d2 = $d->add( years => 86 );
 is( $d->ymd, '2003-11-07', 'Russian revolution' );
+
+done_testing;
+
+# ex: set textwidth=72 :

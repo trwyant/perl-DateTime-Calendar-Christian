@@ -1,7 +1,9 @@
-use strict;
-BEGIN { $^W = 1 }
+use 5.008004;
 
-use Test::More tests => 6;
+use strict;
+use warnings;
+
+use Test::More 0.88;	# Because of done_testing();
 use DateTime::Calendar::Christian;
 
 #########################
@@ -27,3 +29,7 @@ is( $d->ymd, '1752-09-14', 'Correct Gregorian date' );
 $d->set_time_zone( 'America/Chicago' );
 ok( $d->is_julian, 'And back...' );
 is( $d->ymd, '1752-09-02', 'Correct Julian date again' );
+
+done_testing;
+
+# ex: set textwidth=72 :

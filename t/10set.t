@@ -1,7 +1,9 @@
-use strict;
-BEGIN { $^W = 1 }
+use 5.008004;
 
-use Test::More tests => 6;
+use strict;
+use warnings;
+
+use Test::More 0.88;	# Because of done_testing();
 use DateTime::Calendar::Christian;
 
 #########################
@@ -29,3 +31,7 @@ $d = DateTime::Calendar::Christian->new( year  => 1582,
 $d->set( day => 10 );
 is($d->ymd, '1582-09-30', 'correct date (missing day)');
 ok($d->is_julian, 'is_julian (missing day)');
+
+done_testing;
+
+# ex: set textwidth=72 :

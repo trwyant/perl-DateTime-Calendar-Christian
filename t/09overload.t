@@ -1,7 +1,9 @@
-use strict;
-BEGIN { $^W = 1 }
+use 5.008004;
 
-use Test::More tests => 8;
+use strict;
+use warnings;
+
+use Test::More 0.88;	# Because of done_testing();
 use DateTime::Calendar::Christian;
 
 #########################
@@ -37,3 +39,7 @@ TODO: {
     local $TODO = 'DateTime comparison is not working properly';
     ok( $d < $d2, '<' );
 }
+
+done_testing;
+
+# ex: set textwidth=72 :

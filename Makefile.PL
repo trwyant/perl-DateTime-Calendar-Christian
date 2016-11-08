@@ -48,7 +48,7 @@ if ( $mmv >= 6.4501 ) {
 }
 
 my %build_requires = (
-    'Test::More'	=> 0.40,
+    'Test::More'	=> 0.88,
 );
 
 if ( $mmv >= 6.5501 ) {
