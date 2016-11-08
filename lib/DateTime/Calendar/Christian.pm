@@ -11,7 +11,6 @@ use DateTime 0.1402;
 use DateTime::Calendar::Julian 0.04;
 
 use Carp;
-use Params::Validate qw/ validate SCALAR OBJECT /;
 
 use overload ( 'fallback' => 1,
                '<=>' => '_compare_overload',
@@ -99,24 +98,8 @@ sub _process_reform_date {
 }
 
 
-sub new {	## no critic (RequireArgUnpack)
-    my $class = shift;
-    my %args = validate( @_,
-                         { year   => { type => SCALAR, default => undef },
-                           month  => { type => SCALAR, default => 1 },
-                           day    => { type => SCALAR, default => 1 },
-                           hour   => { type => SCALAR, default => 0 },
-                           minute => { type => SCALAR, default => 0 },
-                           second => { type => SCALAR, default => 0 },
-                           nanosecond => { type => SCALAR, default => 0 },
-                           locale  => { type => SCALAR | OBJECT,
-                                          default => $class->DefaultLocale },
-                           time_zone => { type => SCALAR | OBJECT,
-                                          default => 'floating' },
-                           reform_date => { type => SCALAR | OBJECT,
-                                            default => undef },
-                         }
-                       );
+sub new {
+    my ( $class, %args ) = @_;
 
     my $self = {
 	reform_date	=> $class->_process_reform_date(
