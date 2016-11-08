@@ -73,41 +73,29 @@ $reform_dates{$_->[0]} = DateTime->new( year  => $_->[1],
 
 {
     my $DefaultReformDate;
-    sub DefaultReformDate
-    {
-#        my $class = shift;
-	shift;
 
-        if (@_)
-        {
-            $DefaultReformDate = shift;
-            unless (ref $DefaultReformDate) {
-                my $area = lc $DefaultReformDate;
-                $DefaultReformDate = $reform_dates{$area}
-                    or croak "Unknown calendar '$area'";
-            }
-        }
-
-        return $DefaultReformDate;
+    sub DefaultReformDate {
+	my ( $class, $rd ) = @_;
+	$rd
+	    and $DefaultReformDate = $class->_process_reform_date( $rd );
+	return $DefaultReformDate;
     }
 }
 __PACKAGE__->DefaultReformDate('Italy');
 
-sub _init_reform_date {
-    my ($base, $self, $rd) = @_;
-
-    if ($rd && ref $rd) {
-        $self->{reform_date} = DateTime->from_object( object => $rd );
-    } elsif ($rd) {
-        $self->{reform_date} = $reform_dates{ lc $rd }
-            or croak "Unknown calendar region '$rd'";
-    } elsif (ref $base && $base->isa('DateTime::Calendar::Christian')) {
-        $self->{reform_date} = $base->{reform_date}
+# ALL interpretation of the reform_date argument MUST go through here.
+sub _process_reform_date {
+    my ( $class, $rd ) = @_;
+    if ( ref $rd ) {
+	return DateTime->from_object( object => $rd );
+    } elsif ( $rd ) {
+	return $reform_dates{ lc $rd } ||
+            croak "Unknown calendar region '$rd'";
+    } elsif ( ref $class && ( ref $class )->can( 'reform_date' ) ) {
+	return $class->reform_date();
     } else {
-        $self->{reform_date} = $base->DefaultReformDate;
+	return $class->DefaultReformDate();
     }
-
-    return;
 }
 
 
@@ -130,9 +118,10 @@ sub new {	## no critic (RequireArgUnpack)
                          }
                        );
 
-    my $self = {};
-
-    $class->_init_reform_date( $self, delete $args{reform_date} );
+    my $self = {
+	reform_date	=> $class->_process_reform_date(
+	    delete $args{reform_date} ),
+    };
 
     $class = ref $class if ref $class;
     bless $self, $class;
@@ -172,9 +161,10 @@ sub is_gregorian {
 sub from_epoch {
     my ( $class, %args ) = @_;
 
-    my $self = {};
-
-    $class->_init_reform_date( $self, delete $args{reform_date} );
+    my $self = {
+	reform_date	=> $class->_process_reform_date(
+	    delete $args{reform_date} ),
+    };
 
     $class = ref $class if ref $class;
     bless $self, $class;
@@ -192,9 +182,10 @@ sub today { return shift->now(@_)->truncate( to => 'day' ) }
 sub from_object {
     my ( $class, %args ) = @_;
 
-    my $self = {};
-
-    $class->_init_reform_date( $self, delete $args{reform_date} );
+    my $self = {
+	reform_date	=> $class->_process_reform_date(
+	    delete $args{reform_date} ),
+    };
 
     $class = ref $class if ref $class;
     bless $self, $class;
@@ -704,3 +695,5 @@ L<DateTime>, L<DateTime::Calendar::Julian>
 datetime@perl.org mailing list
 
 =cut
+
+# ex: set textwidth=72 :
