@@ -123,8 +123,7 @@ sub new {	## no critic (RequireArgUnpack)
 	    delete $args{reform_date} ),
     };
 
-    $class = ref $class if ref $class;
-    bless $self, $class;
+    bless $self, ref $class || $class;
 
     if (defined $args{year}) {
         $self->{date} = DateTime::Calendar::Julian->new(%args);
@@ -171,8 +170,7 @@ sub from_epoch {
 	    delete $args{reform_date} ),
     };
 
-    $class = ref $class if ref $class;
-    bless $self, $class;
+    bless $self, ref $class || $class;
 
     $self->{date} = DateTime->from_epoch(%args);
     $self->_adjust_calendar;
@@ -192,8 +190,7 @@ sub from_object {
 	    delete $args{reform_date} ),
     };
 
-    $class = ref $class if ref $class;
-    bless $self, $class;
+    bless $self, ref $class || $class;
 
     my $object = $args{object};
     $self->{date} = DateTime->from_object( object => $object );
