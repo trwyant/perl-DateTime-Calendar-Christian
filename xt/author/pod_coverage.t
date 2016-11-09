@@ -37,13 +37,16 @@ eod
 	    # module in any way that Pod::Coverage recognizes
 	    trustme	=> [
 		qr{ \A day_0 \z }smx,
-		qr{ \A day_of_ (?: month (?: _0 )? | week_0 | year_0 ) \Z }smx,
-		qr{ \A do [wy] (?: _0 )? \z }smx,
+		qr{ \A day_of_ (?: month (?: _0 )? | week_0 | quarter_0 |
+		    year_0 ) \Z }smx,
+		qr{ \A do [qwy] (?: _0 )? \z }smx,
+		qr{ \A era \z }smx,
 		qr{ \A iso8601 \z }smx,
 		qr{ \A local_rd_as_seconds \Z }smx,
 		qr{ \A mday (?: _0 )? \z }smx,
 		qr{ \A min \z }smx,
 		qr{ \A mon (?: (?: th )? _0 )? \z }smx,
+		qr{ \A quarter_0 \z }smx,
 		qr{ \A sec \z }smx,
 		qr{ \A utc_year \z }smx,
 		qr{ \A wday (?: _0 )? \z }smx,

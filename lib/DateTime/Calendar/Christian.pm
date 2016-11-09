@@ -19,84 +19,92 @@ use overload ( 'fallback' => 1,
                '+' => '_add_overload',
              );
 
-my %reform_dates;
-$reform_dates{$_->[0]} = DateTime->new( year  => $_->[1],
-                                        month => $_->[2],
-                                        day   => $_->[3] )
-    for [ italy      => 1582, 10, 15 ], # including some other catholic
-                                        # countries (spain, portugal, ...)
-        [ france     => 1582, 12, 20 ],
-        [ belgium    => 1583,  1,  1 ],
-        [ holland    => 1583,  1,  1 ], # or 1583-1-12?
-        [ liege      => 1583,  2, 21 ],
-        [ augsburg   => 1583,  2, 24 ],
-        [ treves     => 1583, 10, 15 ],
-        [ bavaria    => 1583, 10, 16 ],
-        [ tyrolia    => 1583, 10, 16 ],
-        [ julich     => 1583, 11, 13 ],
-        [ cologne    => 1583, 11, 14 ], # or 1583-11-13?
-        [ wurzburg   => 1583, 11, 15 ],
-        [ mainz      => 1583, 11, 22 ],
-        [ strasbourg_diocese => 1583, 11, 27 ],
-        [ baden      => 1583, 11, 27 ],
-        [ carynthia  => 1583, 12, 25 ],
-        [ bohemia    => 1584,  1, 17 ],
-        [ lucerne    => 1584,  1, 22 ],
-        [ silesia    => 1584,  1, 23 ],
-        [ westphalia => 1584,  7, 12 ],
-        [ paderborn  => 1585,  6, 27 ],
-        [ hungary    => 1587, 11,  1 ],
-        [ transylvania=>1590, 12, 25 ],
-        [ prussia    => 1610,  9,  2 ],
-        [ hildesheim => 1631,  3, 26 ],
-        [ minden     => 1668,  2, 12 ],
-        [ strasbourg => 1682,  2, 16 ],
-        [ denmark    => 1700,  3,  1 ],
-        [ germany_protestant => 1700,  3,  1 ],
-        [ gelderland => 1700,  7, 12 ],
-        [ faeror     => 1700, 11, 28 ], # or 1700-11-27?
-        [ iceland    => 1700, 11, 28 ],
-        [ utrecht    => 1700, 12, 12 ],
-        [ zurich     => 1701,  1, 12 ],
-        [ friesland  => 1701,  1, 12 ], # or 1701-01-13?
-        [ drente     => 1701,  5, 12 ], # or 1701-01-12?
-        [ uk         => 1752,  9, 14 ],
-        [ bulgaria   => 1915, 11, 14 ], # or 1916-04-14?
-        [ russia     => 1918,  2, 14 ],
-        [ latvia     => 1918,  2, 15 ],
-        [ romania    => 1919,  4, 14 ], # or 1924-10-14?
-        ;
-# Dates are from http://www.polysyllabic.com/GregConv.html and
-# http://privatewww.essex.ac.uk/~kent/calisto/guide/changes.htm
-# Only those dates that both sites agree on are included at the moment.
+use constant ARRAY_REF	=> ref [];
 
 {
-    my $DefaultReformDate;
+    my %reform_dates = (
+	italy      => [ 1582, 10, 15 ], # including some other catholic
+					# countries (spain, portugal, ...)
+	france     => [ 1582, 12, 20 ],
+	belgium    => [ 1583,  1,  1 ],
+	holland    => [ 1583,  1,  1 ], # or 1583-1-12?
+	liege      => [ 1583,  2, 21 ],
+	augsburg   => [ 1583,  2, 24 ],
+	treves     => [ 1583, 10, 15 ],
+	bavaria    => [ 1583, 10, 16 ],
+	tyrolia    => [ 1583, 10, 16 ],
+	julich     => [ 1583, 11, 13 ],
+	cologne    => [ 1583, 11, 14 ], # or 1583-11-13?
+	wurzburg   => [ 1583, 11, 15 ],
+	mainz      => [ 1583, 11, 22 ],
+	strasbourg_diocese => [ 1583, 11, 27 ],
+	baden      => [ 1583, 11, 27 ],
+	carynthia  => [ 1583, 12, 25 ],
+	bohemia    => [ 1584,  1, 17 ],
+	lucerne    => [ 1584,  1, 22 ],
+	silesia    => [ 1584,  1, 23 ],
+	westphalia => [ 1584,  7, 12 ],
+	paderborn  => [ 1585,  6, 27 ],
+	hungary    => [ 1587, 11,  1 ],
+	transylvania => [ 1590, 12, 25 ],
+	prussia    => [ 1610,  9,  2 ],
+	hildesheim => [ 1631,  3, 26 ],
+	minden     => [ 1668,  2, 12 ],
+	strasbourg => [ 1682,  2, 16 ],
+	denmark    => [ 1700,  3,  1 ],
+	germany_protestant => [ 1700,  3,  1 ],
+	gelderland => [ 1700,  7, 12 ],
+	faeror     => [ 1700, 11, 28 ], # or 1700-11-27?
+	iceland    => [ 1700, 11, 28 ],
+	utrecht    => [ 1700, 12, 12 ],
+	zurich     => [ 1701,  1, 12 ],
+	friesland  => [ 1701,  1, 12 ], # or 1701-01-13?
+	drente     => [ 1701,  5, 12 ], # or 1701-01-12?
+	uk         => [ 1752,  9, 14 ],
+	bulgaria   => [ 1915, 11, 14 ], # or 1916-04-14?
+	russia     => [ 1918,  2, 14 ],
+	latvia     => [ 1918,  2, 15 ],
+	romania    => [ 1919,  4, 14 ], # or 1924-10-14?
+    );
 
-    sub DefaultReformDate {
+    # Dates are from http://www.polysyllabic.com/GregConv.html and
+    # http://privatewww.essex.ac.uk/~kent/calisto/guide/changes.htm
+    # Only those dates that both sites agree on are included at the moment.
+
+    # ALL interpretation of the reform_date argument MUST go through here.
+    sub _process_reform_date {
 	my ( $class, $rd ) = @_;
-	$rd
-	    and $DefaultReformDate = $class->_process_reform_date( $rd );
-	return $DefaultReformDate;
+	if ( my $ref = ref $rd ) {
+	    if ( ARRAY_REF eq $ref ) {
+		return DateTime->new(
+		    year	=> $rd->[0],
+		    month	=> $rd->[1] || 1,
+		    day	=> $rd->[2] || 1,
+		    hour	=> $rd->[3] || 0,
+		    minute	=> $rd->[4] || 0,
+		    second	=> $rd->[5] || 0,
+		    nanosecond	=> $rd->[6] || 0,
+		);
+	    } else {
+		return DateTime->from_object( object => $rd );
+	    }
+	} elsif ( $rd ) {
+	    if ( my $rda = $reform_dates{ my $rd_lc = lc $rd } ) {
+		ARRAY_REF eq ref $rda
+		    and return ( $reform_dates{$rd_lc} =
+		    $class->_process_reform_date( $rda ) );
+		return $rda;
+	    }
+	    croak "Unknown calendar region '$rd'";
+	} elsif ( ref $class && ( ref $class )->can( 'reform_date' ) ) {
+	    return $class->reform_date();
+	} else {
+	    return $class->DefaultReformDate();
+	}
     }
 }
-__PACKAGE__->DefaultReformDate('Italy');
 
-# ALL interpretation of the reform_date argument MUST go through here.
-sub _process_reform_date {
-    my ( $class, $rd ) = @_;
-    if ( ref $rd ) {
-	return DateTime->from_object( object => $rd );
-    } elsif ( $rd ) {
-	return $reform_dates{ lc $rd } ||
-            croak "Unknown calendar region '$rd'";
-    } elsif ( ref $class && ( ref $class )->can( 'reform_date' ) ) {
-	return $class->reform_date();
-    } else {
-	return $class->DefaultReformDate();
-    }
-}
-
+__PACKAGE__->DefaultReformDate( 'Italy' );
 
 sub new {
     my ( $class, %args ) = @_;
@@ -384,6 +392,10 @@ sub set {
 
     croak 'Cannot change reform_date with set()'
         if exists $p{reform_date};
+    carp 'You passed a locale to the set() method.',
+	' You should use set_locale() instead, as using set() may ',
+	'alter the local time near a DST boundary.'
+	if $p{locale};
 
     my %old_p = 
         ( reform_date => $self->{reform_date},
@@ -449,7 +461,17 @@ for my $sub (qw/year ce_year month month_0 month_name month_abbr
                 iso8601 datetime week_year week_number
                 time_zone offset is_dst time_zone_short_name locale
                 utc_rd_values utc_rd_as_seconds local_rd_as_seconds jd
-                mjd epoch utc_year compare _compare_overload/,
+                mjd epoch utc_year compare _compare_overload
+		am_or_pm christian_era secular_era era era_abbr era_name
+		delta_days delta_md delta_ms duration_class hires_epoch
+		hour_1 hour_12 hour_12_0 is_finite is_infinite
+		leap_seconds local_day_of_week local_rd_values
+		quarter quarter_0 quarter_name quarter_abbr
+		set_locale set_formatter subtract_datetime_absolute
+		time_zone_long_name
+		year_with_christian_era year_with_era
+		year_with_secular_era
+		/,
              # these should be replaced with a corrected version
              qw/truncate/) {
     no strict 'refs';
@@ -461,26 +483,54 @@ for my $sub (qw/year ce_year month month_0 month_name month_abbr
             };
 }
 
-*mon = \&month;
-*mon_0 = \&month_0;
-*day  = \&day_of_month;
-*mday = \&day_of_month;
-*day_0  = \&day_of_month_0;
-*mday_0 = \&day_of_month_0;
-*wday = \&day_of_week;
-*dow  = \&day_of_week;
-*wday_0 = \&day_of_week_0;
-*dow_0  = \&day_of_week_0;
-*doy = \&day_of_year;
-*doy_0 = \&day_of_year_0;
-*date = \&ymd;
-*min = \&minute;
-*sec = \&second;
-*DateTime::Calendar::Christian::time = \&hms;
+# Delegate to set();
+
+for my $name ( qw/ year month day hour minute second nanosecond / ) {
+    my $sub = "set_$name";
+    no strict 'refs';
+    *$sub = sub {
+	my ( $self, $value ) = @_;
+	return $self->set( $name => $value );
+    };	
+}
+
+{
+    no warnings 'once';
+
+    *mon = \&month;
+    *mon_0 = \&month_0;
+    *day  = \&day_of_month;
+    *mday = \&day_of_month;
+    *day_0  = \&day_of_month_0;
+    *mday_0 = \&day_of_month_0;
+    *wday = \&day_of_week;
+    *dow  = \&day_of_week;
+    *wday_0 = \&day_of_week_0;
+    *dow_0  = \&day_of_week_0;
+    *doq    = \&day_of_quarter;
+    *doq_0  = \&day_of_quarter_0;
+    *doy = \&day_of_year;
+    *doy_0 = \&day_of_year_0;
+    *date = \&ymd;
+    *min = \&minute;
+    *sec = \&second;
+    *DateTime::Calendar::Christian::time = \&hms;
+}
 
 sub DefaultLocale {
     shift;
     return DateTime->DefaultLocale( @_ );
+}
+
+{
+    my $DefaultReformDate;
+
+    sub DefaultReformDate {
+	my ( $class, $rd ) = @_;
+	$rd
+	    and $DefaultReformDate = $class->_process_reform_date( $rd );
+	return $DefaultReformDate;
+    }
 }
 
 1;
@@ -528,12 +578,9 @@ DateTime. See L<DateTime> for all other methods.
 
 Besides the usual parameters ("year", "month", "day", "hour", "minute",
 "second", "nanosecond", "fractional_seconds", "locale" and "time_zone"),
-this class method takes the
-additional "reform_date" parameter. This parameter can be a DateTime
-object (or an object that can be converted into a DateTime). This
-denotes the first date of the Gregorian calendar. It can also be a
-string, containing the name of a location, e.g. 'Italy'. Location names
-are not case-sensitive.
+this class method takes the additional "reform_date" parameter. See
+L<SPECIFYING REFORM DATE|/SPECIFYING REFORM DATE> below for how to
+specify this.
 
 If this method is used as an instance method and no "reform_date" is
 given, the "reform_date" of the returned object is the same as the one
@@ -561,50 +608,6 @@ assumed that it is a Gregorian date, which is then converted to the
 corresponding Julian date. This behaviour may change in future
 versions. If a date is given that can be both Julian and Gregorian, it
 will be considered Julian. This is a bug.
-
-The supported reform date location names are:
-
- Italy -------------- 1582-10-15 # and some other Catholic countries
- France ------------- 1582-12-20
- Belgium ------------ 1583-1-1
- Holland ------------ 1583-1-1   # or 1583-1-12?
- Liege -------------- 1583-2-21
- Augsburg ----------- 1583-2-24
- Treves ------------- 1583-10-15
- Bavaria ------------ 1583-10-16
- Tyrolia ------------ 1583-10-16
- Julich ------------- 1583-11-13
- Cologne ------------ 1583-11-14 # or 1583-11-13?
- Wurzburg ----------- 1583-11-15
- Mainz -------------- 1583-11-22
- Strasbourg_Diocese - 1583-11-27
- Baden -------------- 1583-11-27
- Carynthia ---------- 1583-12-25
- Bohemia ------------ 1584-1-17
- Lucerne ------------ 1584-1-22
- Silesia ------------ 1584-1-23
- Westphalia --------- 1584-7-12
- Paderborn ---------- 1585-6-27
- Hungary ------------ 1587-11-1
- Transylvania ------- 1590-12-25
- Prussia ------------ 1610-9-2
- Hildesheim --------- 1631-3-26
- Minden ------------- 1668-2-12
- Strasbourg --------- 1682-2-16
- Denmark ------------ 1700-3-1
- Germany_Protestant - 1700-3-1
- Gelderland --------- 1700-7-12
- Faeror ------------- 1700-11-28 # or 1700-11-27?
- Iceland ------------ 1700-11-28
- Utrecht ------------ 1700-12-12
- Zurich ------------- 1701-1-12
- Friesland ---------- 1701-1-12  # or 1701-01-13?
- Drente ------------- 1701-5-12  # or 1701-01-12?
- UK ----------------- 1752-9-14
- Bulgaria ----------- 1915-11-14 # or 1916-04-14?
- Russia ------------- 1918-2-14
- Latvia ------------- 1918-2-15
- Romania ------------ 1919-4-14  # or 1924-10-14?
 
 =item * from_epoch
 
@@ -658,7 +661,71 @@ This static method returns a L<DateTime|DateTime> object representing
 the default reform date. If called with an argument, the argument
 becomes the new reform date, which is returned. The argument is either a
 L<DateTime|DateTime> object (or something that can be converted into
-one) or a reform date location name.
+one) or a reform date location name. See
+L<SPECIFYING REFORM DATE|/SPECIFYING REFORM DATE> below for what kind of
+arguments can be specified.
+
+=back
+
+=head1 SPECIFYING REFORM DATE
+
+The reform date represents the first date the Gregorian calendar came
+into use. It can be specified a number of different ways:
+
+=over
+
+=item * A DateTime object, or an object that can be converted into one.
+
+=item * A location name (case-insentitive) from the following list:
+
+ Italy -------------- 1582-10-15 # and some other Catholic countries
+ France ------------- 1582-12-20
+ Belgium ------------ 1583-1-1
+ Holland ------------ 1583-1-1   # or 1583-1-12?
+ Liege -------------- 1583-2-21
+ Augsburg ----------- 1583-2-24
+ Treves ------------- 1583-10-15
+ Bavaria ------------ 1583-10-16
+ Tyrolia ------------ 1583-10-16
+ Julich ------------- 1583-11-13
+ Cologne ------------ 1583-11-14 # or 1583-11-13?
+ Wurzburg ----------- 1583-11-15
+ Mainz -------------- 1583-11-22
+ Strasbourg_Diocese - 1583-11-27
+ Baden -------------- 1583-11-27
+ Carynthia ---------- 1583-12-25
+ Bohemia ------------ 1584-1-17
+ Lucerne ------------ 1584-1-22
+ Silesia ------------ 1584-1-23
+ Westphalia --------- 1584-7-12
+ Paderborn ---------- 1585-6-27
+ Hungary ------------ 1587-11-1
+ Transylvania ------- 1590-12-25
+ Prussia ------------ 1610-9-2
+ Hildesheim --------- 1631-3-26
+ Minden ------------- 1668-2-12
+ Strasbourg --------- 1682-2-16
+ Denmark ------------ 1700-3-1
+ Germany_Protestant - 1700-3-1
+ Gelderland --------- 1700-7-12
+ Faeror ------------- 1700-11-28 # or 1700-11-27?
+ Iceland ------------ 1700-11-28
+ Utrecht ------------ 1700-12-12
+ Zurich ------------- 1701-1-12
+ Friesland ---------- 1701-1-12  # or 1701-01-13?
+ Drente ------------- 1701-5-12  # or 1701-01-12?
+ UK ----------------- 1752-9-14
+ Bulgaria ----------- 1915-11-14 # or 1916-04-14?
+ Russia ------------- 1918-2-14
+ Latvia ------------- 1918-2-15
+ Romania ------------ 1919-4-14  # or 1924-10-14?
+
+=item * An array reference.
+
+The first seven elements of the array are year, month, day, hour,
+minute, second and nanosecond. Element C<[0]> is the only one that is
+required. Elements C<[1]> and C<[2]> default to C<1>, and the rest to
+C<0>.
 
 =back
 
