@@ -180,6 +180,34 @@ sub from_object {
     return $class->_new( \%args, 'from_object' );
 }
 
+sub from_day_of_year {
+    my ( $class, %args ) = @_;
+
+    my $self = $class->_new( \%args );
+
+    my $rd = $self->reform_date();
+    my $ry = $rd->year;
+
+    if ( $args{year} > $ry ) {
+	$self->{date} = DateTime->from_day_of_year( %args );
+    } elsif ( $args{year} < $ry ) {
+	$self->{date} = DateTime::Calendar::Julian->from_day_of_year(
+	    %args );
+    } else {
+	my $dev = DateTime::Calendar::Christian->gregorian_deviation( $rd );
+	my $rdoy = $rd->day_of_year - $dev;
+	if ( $args{day_of_year} < $rdoy ) {
+	    $self->{date} = DateTime::Calendar::Julian->from_day_of_year(
+		%args );
+	} else {
+	    $args{day_of_year} += $dev;
+	    $self->{date} = DateTime->from_day_of_year( %args );
+	}
+    }
+
+    return $self;
+}
+
 # This method assumes that both current month and next month exists.
 # There can be problems when the number of missing days is larger than
 # 27.
@@ -619,9 +647,9 @@ corresponding Julian date. This behaviour may change in future
 versions. If a date is given that can be both Julian and Gregorian, it
 will be considered Julian. This is a bug.
 
-=item * from_epoch
+=item * from_epoch, from_object, from_day_of_year, last_day_of_month
 
-This method accepts an additional "reform_date" argument. Note that the
+These methods accept an additional "reform_date" argument. Note that the
 epoch is defined for most (all?) systems as a date in the Gregorian
 calendar.
 
