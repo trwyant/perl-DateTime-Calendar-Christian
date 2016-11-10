@@ -10,7 +10,7 @@ our $VERSION = '0.05';
 use DateTime 0.1402;
 use DateTime::Calendar::Julian 0.04;
 
-use Carp;
+use Carp ();
 
 use overload ( 'fallback' => 1,
                '<=>' => '_compare_overload',
@@ -95,7 +95,7 @@ use constant ARRAY_REF	=> ref [];
 		    $class->_process_reform_date( $rda ) );
 		return $rda;
 	    }
-	    croak "Unknown calendar region '$rd'";
+	    Carp::croak( "Unknown calendar region '$rd'" );
 	} elsif ( ref $class && ( ref $class )->can( 'reform_date' ) ) {
 	    return $class->reform_date();
 	} else {
@@ -408,11 +408,11 @@ sub _weeks_in_year
 sub set {
     my ( $self, %p ) = @_;
 
-    croak 'Cannot change reform_date with set()'
+    Carp::croak( 'Cannot change reform_date with set()' )
         if exists $p{reform_date};
-    carp 'You passed a locale to the set() method.',
+    Carp::carp( 'You passed a locale to the set() method.',
 	' You should use set_locale() instead, as using set() may ',
-	'alter the local time near a DST boundary.'
+	'alter the local time near a DST boundary.' )
 	if $p{locale};
 
     my %old_p = 
@@ -485,7 +485,8 @@ for my $sub (
 		qw/truncate/,
 		# The following by Thomas R. Wyant, III
 		qw/
-		am_or_pm christian_era secular_era era era_abbr era_name
+		am_or_pm compare_ignore_floating
+		christian_era secular_era era era_abbr era_name
 		delta_days delta_md delta_ms duration_class format_cldr
 		formatter fractional_second hires_epoch
 		hour_1 hour_12 hour_12_0 is_finite is_infinite
@@ -507,7 +508,7 @@ for my $sub (
     no strict 'refs';
     *$sub = sub {
                 my $self = shift;
-                croak "Empty date object in call to $sub"
+		Carp::croak( "Empty date object in call to $sub" )
                     unless exists $self->{date};
                 $self->{date}->$sub(@_)
             };
@@ -600,7 +601,9 @@ change over until 1918.
 =head1 METHODS
 
 This manpage only describes those methods that differ from those of
-DateTime. See L<DateTime> for all other methods.
+DateTime. See L<DateTime|DateTime> for all other methods. A spirited
+attempt has been made to implement the B<entire> L<DateTime|DateTime>
+interface.
 
 Methods not documented below may behave in unexpected ways when they
 involve dates both before and after the reform date. For example,
