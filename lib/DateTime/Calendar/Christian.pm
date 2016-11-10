@@ -109,12 +109,7 @@ __PACKAGE__->DefaultReformDate( 'Italy' );
 sub new {
     my ( $class, %args ) = @_;
 
-    my $self = {
-	reform_date	=> $class->_process_reform_date(
-	    delete $args{reform_date} ),
-    };
-
-    bless $self, ref $class || $class;
+    my $self = $class->_new( \%args );
 
     if (defined $args{year}) {
         $self->{date} = DateTime::Calendar::Julian->new(%args);
@@ -122,6 +117,22 @@ sub new {
             $self->{date} = DateTime->new(%args);
             $self->_adjust_calendar;
         }
+    }
+
+    return $self;
+}
+
+sub _new {
+    my ( $class, $arg, $method ) = @_;
+
+    my $self = bless {
+	reform_date	=> $class->_process_reform_date(
+	    delete $arg->{reform_date} ),
+    }, ref $class || $class;
+
+    if ( $method ) {
+	$self->{date} = DateTime->$method( %{ $arg } );
+	$self->_adjust_calendar();
     }
 
     return $self;
@@ -156,17 +167,7 @@ sub calendar_name {
 sub from_epoch {
     my ( $class, %args ) = @_;
 
-    my $self = {
-	reform_date	=> $class->_process_reform_date(
-	    delete $args{reform_date} ),
-    };
-
-    bless $self, ref $class || $class;
-
-    $self->{date} = DateTime->from_epoch(%args);
-    $self->_adjust_calendar;
-
-    return $self;
+    return $class->_new( \%args, 'from_epoch' );
 }
 
 sub now { return shift->from_epoch( epoch => (scalar time), @_ ) }
@@ -176,18 +177,7 @@ sub today { return shift->now(@_)->truncate( to => 'day' ) }
 sub from_object {
     my ( $class, %args ) = @_;
 
-    my $self = {
-	reform_date	=> $class->_process_reform_date(
-	    delete $args{reform_date} ),
-    };
-
-    bless $self, ref $class || $class;
-
-    my $object = $args{object};
-    $self->{date} = DateTime->from_object( object => $object );
-    $self->_adjust_calendar;
-
-    return $self;
+    return $class->_new( \%args, 'from_object' );
 }
 
 # This method assumes that both current month and next month exists.
@@ -453,17 +443,23 @@ sub _strftime_helper {
 }
 
 # Delegate to $self->{date}
-
-for my $sub (qw/year ce_year month month_0 month_name month_abbr
+for my $sub (
+		# The following by Eugene van der Pijll
+		qw/year ce_year month month_0 month_name month_abbr
                 day_of_month day_of_month_0 day_of_week day_of_week_0
                 day_name day_abbr ymd mdy dmy hour minute second hms
                 nanosecond millisecond microsecond
                 iso8601 datetime week_year week_number
                 time_zone offset is_dst time_zone_short_name locale
                 utc_rd_values utc_rd_as_seconds local_rd_as_seconds jd
-                mjd epoch utc_year compare _compare_overload
+                mjd epoch utc_year compare _compare_overload/,
+		# these should be replaced with a corrected version -- EvdP
+		qw/truncate/,
+		# The following by Thomas R. Wyant, III
+		qw/
 		am_or_pm christian_era secular_era era era_abbr era_name
-		delta_days delta_md delta_ms duration_class hires_epoch
+		delta_days delta_md delta_ms duration_class format_cldr
+		formatter fractional_second hires_epoch
 		hour_1 hour_12 hour_12_0 is_finite is_infinite
 		leap_seconds local_day_of_week local_rd_values
 		quarter quarter_0 quarter_name quarter_abbr
@@ -472,8 +468,14 @@ for my $sub (qw/year ce_year month month_0 month_name month_abbr
 		year_with_christian_era year_with_era
 		year_with_secular_era
 		/,
-             # these should be replaced with a corrected version
-             qw/truncate/) {
+		# Because Eugene accepted week_number and week_year even
+		# though they might span the reform date, I will accept
+		# the following -- TRW
+		qw/
+		week_of_month
+		weekday_of_month
+		/,
+) {
     no strict 'refs';
     *$sub = sub {
                 my $self = shift;
@@ -572,12 +574,20 @@ change over until 1918.
 This manpage only describes those methods that differ from those of
 DateTime. See L<DateTime> for all other methods.
 
+Methods not documented below may behave in unexpected ways when they
+involve dates both before and after the reform date. For example,
+C<week_number()>, when called on a date in the reform year but after the
+reform, returns the week number in the Gregorian year, not the actual
+year.
+
+B<Caveat programmer.>
+
 =over 4
 
 =item * new( ... )
 
 Besides the usual parameters ("year", "month", "day", "hour", "minute",
-"second", "nanosecond", "fractional_seconds", "locale" and "time_zone"),
+"second", "nanosecond", "locale", "formatter" and "time_zone"),
 this class method takes the additional "reform_date" parameter. See
 L<SPECIFYING REFORM DATE|/SPECIFYING REFORM DATE> below for how to
 specify this.
@@ -642,6 +652,19 @@ calendar as the possible leap day.
 Returns the number of days in the year. Is equal to 365 or 366, except
 for the year(s) of the calendar reform.
 
+=item * day_of_year, day_of_year_0
+
+Returns the day of the year, either one-based or zero-based depending on
+the actual method called. In the reform year this is the actual number
+of days from January 1 (Julian) to the current date, whether Julian or
+Gregorian.
+
+=item * add_datetime, subtract_datetime
+
+These are done in terms of duration, so that, for example, subtracting a
+day from the reform date (Gregorian) gets you the day before the reform
+date (Julian).
+
 =item * strftime
 
 This override allows selected methods of this class (i.e. not inherited
@@ -676,7 +699,7 @@ into use. It can be specified a number of different ways:
 
 =item * A DateTime object, or an object that can be converted into one.
 
-=item * A location name (case-insentitive) from the following list:
+=item * A location name (case-insensitive) from the following list:
 
  Italy -------------- 1582-10-15 # and some other Catholic countries
  France ------------- 1582-12-20
