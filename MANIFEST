@@ -1,4 +1,6 @@
 Changes
+eg/README
+eg/which-calendar
 lib/DateTime/Calendar/Christian.pm
 LICENSE
 Makefile.PL
