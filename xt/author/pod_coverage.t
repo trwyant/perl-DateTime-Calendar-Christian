@@ -48,6 +48,7 @@ eod
 		qr{ \A mon (?: (?: th )? _0 )? \z }smx,
 		qr{ \A quarter_0 \z }smx,
 		qr{ \A sec \z }smx,
+		qr{ \A STORABLE_ (?: freeze | thaw ) \z }smx,
 		qr{ \A utc_year \z }smx,
 		qr{ \A wday (?: _0 )? \z }smx,
 	    ],

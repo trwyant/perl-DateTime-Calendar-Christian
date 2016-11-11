@@ -470,6 +470,23 @@ sub _strftime_helper {
     return $rslt;
 }
 
+sub STORABLE_freeze {
+    my ( $self ) = @_;
+    return (
+	$self->reform_date,
+	$self->{date} ? $self->{date} : (),
+    );
+}
+
+sub STORABLE_thaw {
+    my ( $self, undef, $reform, $date ) = @_;
+    $self->{reform_date} = $reform;
+    defined $date
+	and $self->{date} = $date;
+    return $self;
+}
+
+
 # Delegate to $self->{date}
 for my $sub (
 		# The following by Eugene van der Pijll
@@ -480,7 +497,7 @@ for my $sub (
                 iso8601 datetime week_year week_number
                 time_zone offset is_dst time_zone_short_name locale
                 utc_rd_values utc_rd_as_seconds local_rd_as_seconds jd
-                mjd epoch utc_year compare _compare_overload/,
+                mjd epoch utc_year compare /,
 		# these should be replaced with a corrected version -- EvdP
 		qw/truncate/,
 		# The following by Thomas R. Wyant, III
@@ -512,6 +529,13 @@ for my $sub (
                     unless exists $self->{date};
                 $self->{date}->$sub(@_)
             };
+}
+
+sub _compare_overload {
+    my ( $self, $other ) = @_;
+    $self->{date}
+	or return -1;
+    return $self->{date}->_compare_overload( $other );
 }
 
 # Delegate to set();
@@ -613,7 +637,7 @@ year.
 
 B<Caveat programmer.>
 
-=over 4
+=over
 
 =item * new( ... )
 
@@ -721,6 +745,25 @@ arguments can be specified.
 
 =back
 
+=head1 INTERFACES
+
+This module implements the following interfaces:
+
+=over
+
+=item * Storable
+
+This module implements the Storable interface. All the donkey work is
+done by L<DateTIme|DateTime>.
+
+=item * Overloading
+
+Addition, subtraction, and both string and numeric comparison are
+overloaded. Objects with no date (that is, objects initialized as "date
+generators") collate before objects with a date.
+
+=back
+
 =head1 SPECIFYING REFORM DATE
 
 The reform date represents the first date the Gregorian calendar came
@@ -785,7 +828,7 @@ C<0>.
 
 =head1 BUGS
 
-=over 4
+=over
 
 =item * There are problems with calendars switch to Gregorian before 200
 AD or after about 4000 AD. Before 200 AD, this switch leads to
