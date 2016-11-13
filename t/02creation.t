@@ -65,6 +65,9 @@ $d = DateTime::Calendar::Christian->new( year  => 2003,
                                          reform_date => 'Utrecht' );
 is($d->reform_date->ymd, '1700-12-12', "reform date 'Utrecht'");
 
+is( DateTime::Calendar::Christian->new( reform_date => '2000-1-1'
+    )->reform_date->ymd, '2000-01-01', 'reform date as ISO-8601-ish string' );
+
 done_testing;
 
 # ex: set textwidth=72 :

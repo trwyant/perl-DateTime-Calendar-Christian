@@ -95,6 +95,10 @@ use constant ARRAY_REF	=> ref [];
 		    $class->_process_reform_date( $rda ) );
 		return $rda;
 	    }
+	    if ( $rd =~ m/ \A [0-9] /smx
+		    and my @rda = split qr{ [^0-9]+ }smx, $rd ) {
+		return $class->_process_reform_date( \@rda );
+	    }
 	    Carp::croak( "Unknown calendar region '$rd'" );
 	} elsif ( ref $class && ( ref $class )->can( 'reform_date' ) ) {
 	    return $class->reform_date();
@@ -823,6 +827,14 @@ The first seven elements of the array are year, month, day, hour,
 minute, second and nanosecond. Element C<[0]> is the only one that is
 required. Elements C<[1]> and C<[2]> default to C<1>, and the rest to
 C<0>.
+
+=item * An ISO-8601-ish string.
+
+The string is split on non-numerics, and the reform date initialized
+from a reference to the resultant array, as described in the previous
+item. The string B<must> be the punctuated form; that is, C<'1752-9-14'>
+will work, but C<'17520914'> will not. There must not be a zone
+specification, and the year must not be signed.
 
 =back
 
