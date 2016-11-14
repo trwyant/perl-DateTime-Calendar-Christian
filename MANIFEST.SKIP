@@ -4,6 +4,7 @@
 ^blib/
 ^Build$
 ^cover_db/
+^DateTime-Calendar-Christian
 ^foo
 ^\.git
 ^html/
