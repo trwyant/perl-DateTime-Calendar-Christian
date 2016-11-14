@@ -5,6 +5,8 @@ lib/DateTime/Calendar/Christian.pm
 LICENSE
 Makefile.PL
 MANIFEST
+META.json
+META.yml
 README
 t/01load.t
 t/02creation.t
