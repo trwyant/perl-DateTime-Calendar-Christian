@@ -1,5 +1,16 @@
 Revision history for Perl extension DateTime::Calendar::Christian.
 
+0.05_01		2016-11-13	T. R. Wyant
+    - Implement full DateTime interface. Unless I missed something.
+
+    - Better validation on reform dates (I hope!), plus more ways to
+      specify.
+
+    - Add method calendar_name, and override strftime() so that
+      calendar_name() can appear in a template.
+
+    - Add author tests for various desiderata,
+
 0.05		2016-11-08	T. R. Wyant
     - Convert from DateTime language interface to DateTime locale
       interface.
