@@ -869,11 +869,19 @@ Thomas R. Wyant, III F<wyant at cpan dot org>
 
 =head1 COPYRIGHT
 
-Copyright (c) 2003 Eugene van der Pijll.  All rights reserved.  This
-program is free software; you can redistribute it and/or modify it under
-the same terms as Perl itself.
+Copyright (c) 2003 Eugene van der Pijll. All rights reserved.
 
 Copyright (C) 2016 Thomas R. Wyant, III
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself; either the GNU General Public
+License version 1 (or, at your option, any later version) or the
+Artistic License. For more details, see the full text of the licenses in
+the directory LICENSES.
+
+This program is distributed in the hope that it will be useful, but
+without any warranty; without even the implied warranty of
+merchantability or fitness for a particular purpose.
 
 =head1 SEE ALSO
 

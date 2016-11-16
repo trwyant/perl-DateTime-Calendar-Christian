@@ -2,7 +2,8 @@ Changes
 eg/README
 eg/which-calendar
 lib/DateTime/Calendar/Christian.pm
-LICENSE
+LICENSES/Artistic
+LICENSES/Copying
 Makefile.PL
 MANIFEST
 META.json
