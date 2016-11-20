@@ -17,24 +17,33 @@ eval {
     1;
 } or plan skip_all => 'Unable to load Perl::MinimumVersion';
 
+eval {
+    require version;
+    1;
+} or plan skip_all => 'Unable to load version';
+
 my $min_perl = '5.008004';
+my $min_perl_vers = version->parse( $min_perl );
 
 my $manifest = ExtUtils::Manifest::maniread();
-
-my @to_check;
 
 foreach my $fn ( sort keys %{ $manifest } ) {
     $fn =~ m{ \A xt/ }smx
 	and next;
     is_perl( $fn )
 	or next;
-    push @to_check, $fn;
-}
-
-foreach my $fn ( @to_check ) {
     my $doc = Perl::MinimumVersion->new( $fn );
     cmp_ok $doc->minimum_version(), 'le', $min_perl,
 	"$fn works under Perl $min_perl";
+    my $ppi_doc = $doc->Document();
+    foreach my $inc (
+	@{ $ppi_doc->find( 'PPI::Statement::Include' ) || [] } ) {
+	my $vers = $inc->version()
+	    or next;
+	cmp_ok( version->parse( $vers ), '==', $min_perl_vers,
+	    "$fn has use $min_perl, rather than some other version" );
+	last;
+    }
 }
 
 done_testing;
