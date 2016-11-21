@@ -1,6 +1,8 @@
 Revision history for Perl extension DateTime::Calendar::Christian.
 
-0.05_01		2016-11-13	T. R. Wyant
+0.06		2016-11-20	T. R. Wyant
+    - Repackage licenses into LICENSE/ directory
+
     - Implement full DateTime interface. Unless I missed something.
 
     - Better validation on reform dates (I hope!), plus more ways to
