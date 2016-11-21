@@ -4,6 +4,7 @@ eg/which-calendar
 lib/DateTime/Calendar/Christian.pm
 LICENSES/Artistic
 LICENSES/Copying
+LICENSES/README
 Makefile.PL
 MANIFEST
 META.json
