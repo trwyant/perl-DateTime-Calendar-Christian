@@ -88,11 +88,11 @@ The date is a string containing year, month, day, hour, minute and
 second, punctuated by non-numeric characters. Only the year is required.
 
 The calendar name is obtained by instantiating a
-L<Date::Time::Christian|Date::Time::Christian> object with each
-specified date, and then calling its C<calendar_name()> method. The
-logic actually works with any method that takes no arguments and returns
-a string, so the L<-method|/-method> option is provided for those who
-want to play around with the functionality.
+L<DateTime::Calendar::Christian|DateTime::Calendar::Christian> object
+with each specified date, and then calling its C<calendar_name()>
+method. The logic actually works with any method that takes no arguments
+and returns a string, so the L<-method|/-method> option is provided for
+those who want to play around with the functionality.
 
 =head1 AUTHOR
 
