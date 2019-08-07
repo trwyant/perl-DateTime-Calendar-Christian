@@ -5,7 +5,7 @@ use 5.008004;
 use strict;
 use warnings;
 
-our $VERSION = '0.07';
+our $VERSION = '0.07_01';
 
 use DateTime 0.1402;
 use DateTime::Calendar::Julian 0.04;
