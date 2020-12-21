@@ -863,7 +863,7 @@ Thomas R. Wyant, III F<wyant at cpan dot org>
 
 Copyright (c) 2003 Eugene van der Pijll. All rights reserved.
 
-Copyright (C) 2016-2019 Thomas R. Wyant, III
+Copyright (C) 2016-2020 Thomas R. Wyant, III
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself; either the GNU General Public
