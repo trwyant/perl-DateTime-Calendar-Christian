@@ -850,8 +850,12 @@ specification, and the year must not be signed.
 
 =head1 SUPPORT
 
-Support for this module is provided via the datetime@perl.org email
-list. See http://lists.perl.org/ for more details.
+Support for this module is provided via the F<datetime@perl.org> email
+list. See L<https://lists.perl.org/> for more details.
+
+Please report bugs to
+L<https://github.com/trwyant/perl-DateTime-Calendar-Christian/issues>, or
+in electronic mail to F<wyant@cpan.org>.
 
 =head1 AUTHOR
 
