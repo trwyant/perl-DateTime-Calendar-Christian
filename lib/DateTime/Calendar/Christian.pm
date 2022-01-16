@@ -313,7 +313,15 @@ sub subtract_datetime {
 sub add_duration {
     my ($self, $dur) = @_;
 
+=begin comment
+
+    # See larger block comment below, of which this is a logical part.
+
     my $start_jul = $self->is_julian;
+
+=end comment
+
+=cut
 
     # According to the papal bull and the English royal decree that
     # introduced the Gregorian calendar, dates should be calculated as
@@ -321,6 +329,24 @@ sub add_duration {
     # most cases...
     $self->{date}->add_duration($dur);
     $self->_adjust_calendar;
+
+=begin comment
+
+    # Testing seems to say that the following introduces errors by
+    # double-counting the Gregorian deviation. The _adjust_calendar()
+    # method works by calling $requisite_class->from_object(). This
+    # works using the local_rd_values(), and so SHOULD give the correct
+    # object already. Why the original author thought this was necessary
+    # is a mystery to me, though I note that the adjustment is zero
+    # except for rather large durations.
+    #
+    # Yes, I regard commented-out code as code smell, but in case this
+    # turns out to be the wrong fix I want to leave plenty of clues for
+    # myself, or whatever poor sucker gets to try to sort this out
+    # again.
+    #
+    # Thanks to Christian Carey for disovering this problem with a
+    # duration of 43,100 days.
 
     my $dd;
     if ($start_jul and $self->is_gregorian) {
@@ -340,6 +366,10 @@ sub add_duration {
     }
 
     $self->{date}->subtract( days => $dd ) if $dd;
+
+=end comment
+
+=cut
 
     return $self;
 }
