@@ -39,14 +39,11 @@ is( $d2->ymd, '1585-10-14', 'adding years around calendar change' );
 $d2->subtract( years => 3 );
 is( $d2->ymd, '1582-10-04', 'subtracting years around calendar change' );
 
-TODO: {
-    local $TODO = 'Broken while working on RT 140734';
-    $d2 = $d->clone;
-    $d2->add( years => 300 );
-    is( $d2->ymd, '1882-10-14', 'adding centuries around calendar change' );
-    $d2->subtract( years => 300 );
-    is( $d2->ymd, '1582-10-04', 'subtracting centuries around calendar change' );
-}
+$d2 = $d->clone;
+$d2->add( years => 300 );
+is( $d2->ymd, '1882-10-14', 'adding centuries around calendar change' );
+$d2->subtract( years => 300 );
+is( $d2->ymd, '1582-10-04', 'subtracting centuries around calendar change' );
 
 $d = DateTime::Calendar::Christian->new( year  => 1285,
                                          month => 1,
@@ -55,11 +52,8 @@ $d = DateTime::Calendar::Christian->new( year  => 1285,
 $d->add( years => 300 );
 is( $d->ymd, '1585-01-11', 'adding centuries around calendar change' );
 
-TODO: {
-    local $TODO = 'Broken while working on RT 140734';
-    $d->subtract( years => 300 );
-    is( $d->ymd, '1285-01-01', 'subtracting centuries around calendar change' );
-}
+$d->subtract( years => 300 );
+is( $d->ymd, '1285-01-01', 'subtracting centuries around calendar change' );
 
 $d = DateTime::Calendar::Christian->new(
         year => 1582, month => 10, day => 30 );
@@ -94,10 +88,7 @@ $d2->add( years => 60 );
 is( $d2->ymd, '1792-02-22', "Washington's 60th birthday" );
 $d2 = $d->clone;
 $d2->add( years => 100 );
-TODO: {
-    local $TODO = 'Broken while working on RT 140734';
-    is( $d2->ymd, '1832-02-22', "Washington's 100th birthday" );
-}
+is( $d2->ymd, '1832-02-22', "Washington's 100th birthday" );
 # (This is actually 1832-02-10 Julian!)
 
 # George II's birthday (see Ben Franklin's Poor Richard's Almanac for

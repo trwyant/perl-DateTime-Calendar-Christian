@@ -327,49 +327,54 @@ sub add_duration {
     # introduced the Gregorian calendar, dates should be calculated as
     # if the change did not happen; this makes date math very easy in
     # most cases...
-    $self->{date}->add_duration($dur);
-    $self->_adjust_calendar;
+    # But not all.
 
-=begin comment
+    my %deltas = $dur->deltas;
 
-    # Testing seems to say that the following introduces errors by
-    # double-counting the Gregorian deviation. The _adjust_calendar()
-    # method works by calling $requisite_class->from_object(). This
-    # works using the local_rd_values(), and so SHOULD give the correct
-    # object already. Why the original author thought this was necessary
-    # is a mystery to me, though I note that the adjustment is zero
-    # except for rather large durations.
-    #
-    # Yes, I regard commented-out code as code smell, but in case this
-    # turns out to be the wrong fix I want to leave plenty of clues for
-    # myself, or whatever poor sucker gets to try to sort this out
-    # again.
-    #
-    # Thanks to Christian Carey for disovering this problem with a
-    # duration of 43,100 days.
+    # We take the components of DateTime::Duration in the same order
+    # that DateTime itself does.
 
-    my $dd;
-    if ($start_jul and $self->is_gregorian) {
-
-        # The period after reform_date has been calculated in Julian
-        # instead of in Gregorian; this may have introduced extra leap
-        # days; the date should be set back.
-        $dd = $self->gregorian_deviation($self->{date}) -
-              $self->gregorian_deviation($self->{reform_date});
-    } elsif (not $start_jul and $self->is_julian) {
-
-        # The period before reform_date has been calculated in Gregorian
-        # instead of in Julian; we may have to introduce extra leap
-        # days; the date should be set back
-        $dd = $self->gregorian_deviation($self->{reform_date}) -
-              $self->gregorian_deviation($self->{date});
+    if ( my $days = delete $deltas{days} ) {
+	# Days must not be adjusted further, for sanity's sake. See RT
+	# 140734.
+	$self->{date}->add( days => $days );
+	$self->_adjust_calendar;
     }
 
-    $self->{date}->subtract( days => $dd ) if $dd;
+    if ( my $months = delete $deltas{months} ) {
+	# This must be adjusted to avoid regression.
+	# TODO there are other sane things to do here.
 
-=end comment
+	my $start_jul = $self->is_julian;
 
-=cut
+	$self->{date}->add( months => $months);
+	$self->_adjust_calendar;
+
+	my $dd;
+	if ($start_jul and $self->is_gregorian) {
+
+	    # The period after reform_date has been calculated in Julian
+	    # instead of in Gregorian; this may have introduced extra
+	    # leap days; the date should be set back.
+	    $dd = $self->gregorian_deviation($self->{date}) -
+		  $self->gregorian_deviation($self->{reform_date});
+	} elsif (not $start_jul and $self->is_julian) {
+
+	    # The period before reform_date has been calculated in
+	    # Gregorian instead of in Julian; we may have to introduce
+	    # extra leap days; the date should be set back
+	    $dd = $self->gregorian_deviation($self->{reform_date}) -
+		  $self->gregorian_deviation($self->{date});
+	}
+
+	$self->{date}->subtract( days => $dd ) if $dd;
+
+    }
+
+    if ( keys %deltas ) {
+	$self->{date}->add( %deltas );
+	$self->_adjust_calendar;
+    }
 
     return $self;
 }
