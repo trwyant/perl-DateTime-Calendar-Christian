@@ -1,6 +1,7 @@
 blib/
 cover_db/
 DateTime-Calendar-Christian-*
+foo/
 Makefile
 meta/
 META.*
