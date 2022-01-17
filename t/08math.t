@@ -65,6 +65,8 @@ isa_ok( $dur, 'DateTime::Duration' );
 is( $dur->delta_days, 19, 'datetime - datetime' );
 
 TODO: {
+    # NOTE not simply local $TODO = ... because this code actually
+    # throws an execption.
     todo_skip 'mixed math (with DateTime objects) not implemented', 2;
     $d = DateTime->new( year => 1582, month => 10, day => 30 );
     $dur = $d2->subtract_datetime($d);
@@ -90,6 +92,9 @@ $d2 = $d->clone;
 $d2->add( years => 100 );
 is( $d2->ymd, '1832-02-22', "Washington's 100th birthday" );
 # (This is actually 1832-02-10 Julian!)
+
+$d2 = $d->clone->add( years => 200 );
+is( $d2->ymd, '1932-02-22', "Washington's 200th birthday" );
 
 # George II's birthday (see Ben Franklin's Poor Richard's Almanac for
 # November 1753, http://www.gettysburg.edu/~tshannon/his341/pra53nov.htm)
