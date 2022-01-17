@@ -313,16 +313,6 @@ sub subtract_datetime {
 sub add_duration {
     my ($self, $dur) = @_;
 
-=begin comment
-
-    # See larger block comment below, of which this is a logical part.
-
-    my $start_jul = $self->is_julian;
-
-=end comment
-
-=cut
-
     # According to the papal bull and the English royal decree that
     # introduced the Gregorian calendar, dates should be calculated as
     # if the change did not happen; this makes date math very easy in
@@ -349,6 +339,45 @@ sub add_duration {
 
 	$self->{date}->add( months => $months);
 	$self->_adjust_calendar;
+
+	# The intent of the following code is to implement the usual
+	# conversion, by adding or subtracting the Gregorian deviation
+	# as of the reform date. An example would be that George
+	# Washington was born on February 11 1732 Julian. The reform
+	# took this to February 22 Gregorian, and that is the date
+	# usually given, even though a couple more days' difference has
+	# accumulated since then.
+	#
+	# A straightforward implementation would be to do the change in
+	# two steps: addition would be in Julian to the reform date and
+	# then in Gregorian for the rest of the interval, and vice versa
+	# for subtraction. But that would involve going back and redoing
+	# tha calculation.
+	#
+	# What this implementation does is to recognize that part of the
+	# calculation has been done in the wrong calendar, and correct
+	# for the number of leap year days that did (or did not) occur
+	# under the correct calendar.
+	#
+	# The original implementation nade this correction in all cases.
+	# But as Christian Carey found out, this gives incorrect (or at
+	# least very surprising) results when adding or subtracting
+	# enough days to not only cross the reform date but cross one of
+	# the years affected by the reform. His example was that adding
+	# 43,099 days to 1583-03-01 (Julian) correctly gave 1700-03-11
+	# (Gregorian), but adding 43,100 days also gave 1700-03-11
+	# rather than 1700-03-12. This is described (sketchily) in RT
+	# 140734.
+	#
+	# The solution I have adopted is to pick apart the interval the
+	# same way DateTime does (and is documented to do) and only
+	# apply the correction to the month portion of the interval.
+	# This fixes RT 140734, but preserves the fact that if you
+	# calculate GW's Nth birthday by adding N years to his Julian
+	# birthday, the result is always either February 11 Julian or
+	# February 22 Gregorian, using the UK reform date.
+	#
+	# -- TRW
 
 	my $dd;
 	if ($start_jul and $self->is_gregorian) {
@@ -753,11 +782,31 @@ the actual method called. In the reform year this is the actual number
 of days from January 1 (Julian) to the current date, whether Julian or
 Gregorian.
 
-=item * add_datetime, subtract_datetime
+=item * add, subtract
 
 These are done in terms of duration, so that, for example, subtracting a
 day from the reform date (Gregorian) gets you the day before the reform
 date (Julian).
+
+When months and/or years are involved, the result is modified from a
+straight I<rata die> calculation to add or subtract the number of days
+skipped by the reform. Without this modification, George Washington's
+birthday of February 11 Julian would drift forward in the Gregorian
+calendar as the difference between the two calendars increased. With
+this modification, it is February 22 Gregorian regardless of the actual
+days difference between the two calendars.
+
+B<Note> that in versions C<0.12> and earlier this modification was
+applied to B<all> durations. This produced anomalous (i.e. wrong)
+results when adding or subtracting large numbers of days.
+
+Beginning with version C<0.12_01> the modification is only applied to
+months (and years, since years are folded into months when a
+L<DateTime::Duration|DateTime::Duration> object is created.) The actual
+order of operation is that specified by L<DateTime|DateTime>: the
+C<days> component of the duration is applied first, then C<months> (with
+the above modification), then C<minutes>, C<seconds>, and
+C<nanoseconds>.
 
 =item * strftime
 
