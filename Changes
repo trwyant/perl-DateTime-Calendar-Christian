@@ -7,12 +7,12 @@
     RT 140734 - Adding large durations.  The problem here was that after
     doing a straight rata die addition, if the new date was on the other
     side of the reform date from the original date a correction would be
-    applied so that (e.g.) February 11 Julian would always be February
-    22 Gregorian, and vice versa. But this makes sense only when adding
-    months or years. When adding days it introduces an error of a day
-    for each year which is a leap year Julian but not Gregorian. The fix
-    applies the adkustment only when adding months or years.  Thanks to
-    Christian Carey for finding this.
+    applied so that (e.g., using the UK reform date) February 11 Julian
+    would always be February 22 Gregorian, and vice versa. But this
+    makes sense only when adding months or years. When adding days it
+    introduces an error of a day for each year which is a leap year
+    Julian but not Gregorian. The fix applies the adjustment only when
+    adding months or years.  Thanks to Christian Carey for finding this.
 
 0.12		2021-09-25	T. R. Wyant
     Correct repository links in metadata.  Thanks to Keith Thompson for
