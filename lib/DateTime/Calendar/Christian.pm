@@ -746,7 +746,8 @@ will be considered Julian. This is a bug.
 
 These methods accept an additional "reform_date" argument. Note that the
 epoch is defined for most (all?) systems as a date in the Gregorian
-calendar.
+calendar. B<But> this module will still represent it as a Julian date if
+the epoch gives a date before the reform date.
 
 =item * reform_date
 
@@ -806,7 +807,18 @@ L<DateTime::Duration|DateTime::Duration> object is created.) The actual
 order of operation is that specified by L<DateTime|DateTime>: the
 C<days> component of the duration is applied first, then C<months> (with
 the above modification), then C<minutes>, C<seconds>, and
-C<nanoseconds>.
+C<nanoseconds>. This can give rise to commutation/round-trip failures,
+and these may be more common under this change, but this appears to be
+the price of fixing the bug described in the previous paragraph.
+
+The L<DateTime|DateTime> documentation notes that this can happen in
+that module even in simple cases, such as adding a month to (say)
+January 31. It also notes that if order of operation is an issue, you
+can force it by doing something like
+
+ $dt->add( months => 3 )->add( days => 5 );
+
+to force months to be done first.
 
 =item * strftime
 
