@@ -417,6 +417,20 @@ sub gregorian_deviation {
     return $date->gregorian_deviation;
 }
 
+sub julian_deviation {
+    my ($class, $date) = @_;
+
+    $date ||= $class;
+
+    $date = DateTime->from_object( object => $date )
+	unless 'DateTime' eq ref $date;
+
+    my $year = $date->{local_c}{year};
+    $year-- if $date->{local_c}{month} <= 2;
+
+    return DateTime::Calendar::Julian::_floor($year/100)-DateTime::Calendar::Julian::_floor($year/400)-2;
+}
+
 sub reform_date { return $_[0]->{reform_date} }
 
 # Almost the same as DateTime::week
@@ -832,6 +846,19 @@ This method returns the difference in days between the Gregorian and the
 Julian calendar. If the parameter $datetime is given, it will be used to
 calculate the result; in this case this method can be used as a class
 method.
+
+This deviation increments on March 1 (Julian) of any year which is a
+leap year in the Julian calendar but not the Gregorian calendar.
+
+=item * julian_deviation( [$datetime] )
+
+This method returns the difference in days between the Gregorian and the
+Julian calendar. If the parameter $datetime is given, it will be used to
+calculate the result; in this case this method can be used as a class
+method.
+
+This deviation increments on March 1 (Gregorian) of any year which is a
+leap year in the Julian calendar but not the Gregorian calendar.
 
 =item * DefaultReformDate
 
