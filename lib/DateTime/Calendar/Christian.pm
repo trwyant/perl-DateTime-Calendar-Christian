@@ -852,6 +852,8 @@ leap year in the Julian calendar but not the Gregorian calendar.
 
 =item * julian_deviation( [$datetime] )
 
+This method was added in version 0.13.
+
 This method returns the difference in days between the Gregorian and the
 Julian calendar. If the parameter $datetime is given, it will be used to
 calculate the result; in this case this method can be used as a class
