@@ -1,12 +1,7 @@
-0.12_02		2022-01-28	T. R. Wyant
+0.13		2022-02-04	T. R. Wyant
     Add julian_deviation().  This is like gregorian_deviation(), but
     increments on March 1 Gregorian rather than March 1 Julian. Thanks
     to Christian Carey for suggesting this.
-
-    Tweak POD for from_epoch() and add, subtract.  Fairly significantly
-    in the latter case.
-
-0.12_01		2022-01-19	T. R. Wyant
 
     Correct minimum perl to 5.008004 in metadata.  This has always been
     the minimum functionally because DateTime requires 5.008004, but for
