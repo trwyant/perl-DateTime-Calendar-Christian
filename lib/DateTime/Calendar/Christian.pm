@@ -603,6 +603,20 @@ for my $sub (
 		week_of_month
 		weekday_of_month
 		/,
+		# Missed in the above somehow --TRW
+		qw/
+		day_of_quarter
+		day_of_quarter_0
+		is_between
+		is_last_day_of_month
+		is_last_day_of_quarter
+		is_last_day_of_year
+		month_length
+		quarter_length
+		rfc3339
+		stringify
+		year_length
+		/,
 ) {
     no strict 'refs';
     *$sub = sub {
