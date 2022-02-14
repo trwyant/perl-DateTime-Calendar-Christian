@@ -12,6 +12,13 @@ use DateTime::Calendar::Julian 0.04;
 
 use Carp ();
 
+# We're relying on DateTime's validation, but we want Carp to report
+# errors against our caller, not ourselves. Ditto
+# DateTime::Calendar::Julian
+our @CARP_NOT = (
+    qw{ DateTime DateTime::Duration DateTime::Calendar::Julian },
+);
+
 use overload ( 'fallback' => 1,
                '<=>' => '_compare_overload',
                'cmp' => '_compare_overload',
