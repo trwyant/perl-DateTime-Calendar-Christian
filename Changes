@@ -1,3 +1,6 @@
+0.13_02		2022-02-19	T. R. Wyant
+    Require DateTime 1.53 for all the additional methods.
+
 0.13_01		2022-02-18	T. R. Wyant
     Report DateTime validation errors relative to caller, not the point
     at which DateTime was called.
