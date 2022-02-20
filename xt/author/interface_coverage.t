@@ -24,7 +24,6 @@ foreach my $pair ( pairs( qw{ DateTime::Calendar::Christian DateTime } ) ) {
 	exists $want->{$key}
 	    or delete $got->{$key};
     }
-    my $missing;
     foreach my $name ( sort keys %{ $want } ) {
 	ok $got->{$name}, "$pair->[0] implements $name from $pair->[1]";
     }
