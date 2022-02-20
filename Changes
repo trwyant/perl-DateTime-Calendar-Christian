@@ -1,5 +1,7 @@
 0.13_02		2022-02-19	T. R. Wyant
-    Require DateTime 1.53 for all the additional methods.
+    Require DateTime 1.53 for all the additional methods.  Thanks to
+    Slaven Rezić, not only for running the CPAN tester that found the
+    problem, but filing an RT ticket on it. CPAN TESTERS ROCK!
 
 0.13_01		2022-02-18	T. R. Wyant
     Report DateTime validation errors relative to caller, not the point
