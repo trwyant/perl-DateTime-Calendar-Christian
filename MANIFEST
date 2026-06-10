@@ -3,14 +3,14 @@ CONTRIBUTING
 eg/README
 eg/which-calendar
 lib/DateTime/Calendar/Christian.pm
-LICENSES/Artistic
-LICENSES/Copying
-LICENSES/README
+LICENSE-Artistic
+LICENSE-GPL
 Makefile.PL
 MANIFEST
 META.json
 META.yml
 README
+README.LICENSE
 SECURITY
 t/01load.t
 t/02creation.t

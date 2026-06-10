@@ -1020,7 +1020,7 @@ This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself; either the GNU General Public
 License version 1 (or, at your option, any later version) or the
 Artistic License. For more details, see the full text of the licenses in
-the directory LICENSES.
+the files F<LICENSE-Artistic> and F<LICENSE-GPL>.
 
 This program is distributed in the hope that it will be useful, but
 without any warranty; without even the implied warranty of
