@@ -40,8 +40,7 @@ if ( $mmv >= 6.4501 ) {
 	},
 	resources	=> {
 	    bugtracker	=> {
-		web	=> 'https://rt.cpan.org/Public/Dist/Display.html?Name=DateTime-Calendar-Christian',
-		# web	=> 'https://github.com/trwyant/perl-DateTime-Calendar-Christian/issues',
+		web	=> 'https://github.com/trwyant/perl-DateTime-Calendar-Christian/issues',
                 mailto  => 'harryfmudd@comcast.net',
             },
 	    license	=> 'http://dev.perl.org/licenses/',

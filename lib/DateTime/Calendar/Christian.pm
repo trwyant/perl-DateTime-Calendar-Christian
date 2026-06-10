@@ -1000,8 +1000,7 @@ Support for this module is provided via the F<datetime@perl.org> email
 list. See L<https://lists.perl.org/> for more details.
 
 Please report bugs to
-L<https://rt.cpan.org/Public/Dist/Display.html?Name=DateTime-Calendar-Christian>,
-L<https://github.com/trwyant/perl-DateTime-Calendar-Christian/issues>, or
+L<https://github.com/trwyant/perl-DateTime-Calendar-Christian/issues> or
 in electronic mail to F<harryfmudd@comcast.net>.
 
 =head1 AUTHOR
