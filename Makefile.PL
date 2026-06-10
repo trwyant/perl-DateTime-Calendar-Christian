@@ -21,7 +21,7 @@ my %args = (
     ABSTRACT        => 'Dates in the Christian (combined Julian/Gregorian) calendar',
     AUTHOR          => [
 	'Eugene van der Pijll <pijll@gmx.net>',
-	'Thomas R. Wyant, III <wyant at cpan dot org>',
+	'Thomas R. Wyant, III <harryfmudd at comcast dot net>',
     realclean	=> { FILES => 'cover_db' },
     ],
 );
@@ -42,7 +42,7 @@ if ( $mmv >= 6.4501 ) {
 	    bugtracker	=> {
 		web	=> 'https://rt.cpan.org/Public/Dist/Display.html?Name=DateTime-Calendar-Christian',
 		# web	=> 'https://github.com/trwyant/perl-DateTime-Calendar-Christian/issues',
-                mailto  => 'wyant@cpan.org',
+                mailto  => 'harryfmudd@comcast.net',
             },
 	    license	=> 'http://dev.perl.org/licenses/',
 	    repository	=> {

@@ -1002,13 +1002,13 @@ list. See L<https://lists.perl.org/> for more details.
 Please report bugs to
 L<https://rt.cpan.org/Public/Dist/Display.html?Name=DateTime-Calendar-Christian>,
 L<https://github.com/trwyant/perl-DateTime-Calendar-Christian/issues>, or
-in electronic mail to F<wyant@cpan.org>.
+in electronic mail to F<harryfmudd@comcast.net>.
 
 =head1 AUTHOR
 
 Eugene van der Pijll <pijll@gmx.net>
 
-Thomas R. Wyant, III F<wyant at cpan dot org>
+Thomas R. Wyant, III F<harryfmudd at comcast dot net>
 
 =head1 COPYRIGHT
 
