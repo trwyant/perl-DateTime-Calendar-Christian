@@ -366,7 +366,7 @@ sub add_duration {
 	# for the number of leap year days that did (or did not) occur
 	# under the correct calendar.
 	#
-	# The original implementation nade this correction in all cases.
+	# The original implementation made this correction in all cases.
 	# But as Christian Carey found out, this gives incorrect (or at
 	# least very surprising) results when adding or subtracting
 	# enough days to not only cross the reform date but cross one of
@@ -610,7 +610,7 @@ for my $sub (
 		week_of_month
 		weekday_of_month
 		/,
-		# Missed in the above somehow --TRW
+		# Missed in the above somehow -- TRW
 		qw/
 		day_of_quarter
 		day_of_quarter_0
